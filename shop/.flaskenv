@@ -1,0 +1,2 @@
+FLASK_APP=shopSystem
+FLASK_ENV=development
