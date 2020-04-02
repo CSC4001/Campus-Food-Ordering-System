@@ -34,7 +34,7 @@ def forge(count):
 
     fake = Faker(locale='zh_CN')
     click.echo('Working...')
-    status = ['正常营业','停业整顿','已关店']
+    status = ['正常营业','休息中','停业整顿','已关店']
     for i in range(count):
         #with open('static/favicon.ico','rb') as img:
         #   img=base64.b64encode(img.read())
