@@ -18,5 +18,5 @@ class ShopInfoForm(FlaskForm):
     shop_license_number = StringField('证件号', validators=[DataRequired(), Length(9)])
     shop_info = TextAreaField('详细信息', validators=[DataRequired(), Length(1, 200)])
     shop_delivery_fee = RadioField('运费', choices=[('0',0),('1',1),('2',2),('3',3),('4',4),('5',5)], validators=[DataRequired()])
-
+    shop_status = SelectField('店铺状态',choices=[('正常营业','正常营业'),('休息中','休息中'),('停业整顿','停业整顿'),('已关店','已关店')], validators=[DataRequired()])
     submit = SubmitField('确认修改')

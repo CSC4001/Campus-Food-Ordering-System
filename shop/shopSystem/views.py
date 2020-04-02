@@ -32,8 +32,12 @@ TODO:
 '''
 @app.route('/edit/<int:shop_id>', methods=['GET', 'POST'])
 def edit_shop(shop_id):
+    # if shop is closed, cannot enter this page
     form = ShopInfoForm()
     shop = Shop.query.get(shop_id)
+    if shop.shop_status == '已关店':
+        flash('该店铺已关闭。')
+        return redirect(url_for('index'))
     if form.validate_on_submit():
         shop.shop_name = form.shop_name.data
         shop.shop_contact = form.shop_contact.data
@@ -42,6 +46,11 @@ def edit_shop(shop_id):
         shop.shop_license_number = form.shop_license_number.data
         shop.shop_info = form.shop_info.data
         shop.shop_delivery_fee = form.shop_delivery_fee.data
+        if shop.shop_status == '停业整顿':
+            flash('当前状态无法操作。请联系管理员申请复业。')
+            return redirect(url_for('edit_shop',shop_id=shop_id))
+        else:
+            shop.shop_status = form.shop_status.data
         db.session.commit()
         flash('Successful update to shop info!')
         return redirect(url_for('index'))
@@ -52,6 +61,7 @@ def edit_shop(shop_id):
     form.shop_license_number.data = shop.shop_license_number
     form.shop_info.data = shop.shop_info
     form.shop_delivery_fee.data = form.shop_delivery_fee.choices[int(shop.shop_delivery_fee)][0]
+    form.shop_status.data = shop.shop_status
     return render_template('edit.html', form=form)
 
 '''
