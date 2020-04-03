@@ -27,5 +27,17 @@ class Shop(db.Model):
     shop_location_detail = db.Column(db.Text(150))
     shop_license_number = db.Column(db.String(9))
     shop_status = db.Column(db.String(20))
+    # relationship: shop and product
+    products = db.relationship('Product', back_populates='shop')
 
-
+# product database model
+class Product(db.Model):
+    product_id = db.Column(db.Integer, primary_key=True)
+    shop_id = db.Column(db.Integer, db.ForeignKey('shop.shop_id'))
+    product_name = db.Column(db.String(20),index=True)
+    # product_avatar =
+    product_info = db.Column(db.Text(150))
+    product_price = db.Column(db.Float)
+    total_sale = db.Column(db.Integer)
+    # relationship: shop and product
+    shop = db.relationship('Shop',back_populates='products')

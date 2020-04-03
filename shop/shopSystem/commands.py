@@ -8,7 +8,7 @@
 import click
 
 from shopSystem import app, db
-from shopSystem.models import Shop
+from shopSystem.models import Shop, Product
 import base64,random
 
 @app.cli.command()
@@ -39,7 +39,6 @@ def forge(count):
         #with open('static/favicon.ico','rb') as img:
         #   img=base64.b64encode(img.read())
         shop_message = Shop(
-            shop_id = i,
             user_id = str(fake.random_number(20)),
             shop_name = fake.company(),
             shop_info = fake.paragraph(3),
@@ -57,5 +56,31 @@ def forge(count):
         )
         db.session.add(shop_message)
 
+    shop_message = Shop(
+        user_id = str(fake.random_number(20)),
+        shop_name = "兰小花",
+        shop_info = "卖牛肉面的",
+        shop_delivery_fee = fake.random_int(min=0,max=5),
+        shop_rate = fake.random_int(),
+        shop_rate_number = fake.random_int(),
+        shop_balance = fake.random_number(),
+        shop_contact = fake.phone_number(),
+        shop_location = "潘多拉",
+        shop_location_detail = "学生活动中心一楼潘多拉美食广场",
+        shop_license_number = str(fake.random_number(9)),
+        shop_status = "正常营业",
+        # add avatar at the last step
+        #shop_avatar = img
+    )
+    db.session.add(shop_message)
+    product_message = Product(
+        product_name = "兰小花牛肉面",
+        # product_avatar =
+        product_info = "一碗牛肉面",
+        product_price = 14,
+        total_sale = 100
+    )
+    db.session.add(product_message)
+    product_message.shop = shop_message
     db.session.commit()
     click.echo('Created %d fake messages.' % count)
