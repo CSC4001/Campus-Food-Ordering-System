@@ -3,7 +3,7 @@ CREATE SCHEMA ordering_system;
 CREATE TABLE ordering_system.administrators (
     administrator_name		VARCHAR(64) NOT NULL UNIQUE,
     administrator_password	VARCHAR(64) NOT NULL,
-    PRIMARY KEY (administrator_name)
+    PRIMARY KEY (administrator_name),
     CHECK (LENGTH(administrator_name) > 0),
     CHECK (LENGTH(administrator_password) > 0));
 
