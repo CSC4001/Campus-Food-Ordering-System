@@ -4,17 +4,17 @@
     <!-- login -->
     <el-row type=flex justify="end">
       <el-col :span="2">
-        <el-button type="text" @click="dialogFormVisible = true">Sign in</el-button>
-        <el-dialog title="Sign in" :visible.sync="dialogFormVisible">
-          <el-form :model="form">
+        <el-button type="text" @click="loginFormVisible = true">Sign in</el-button>
+        <el-dialog title="Sign in" :visible.sync="loginFormVisible">
+          <el-form :model="loginForm">
             <el-form-item label="Email">
-              <el-input v-model="form.email" autocomplete="off"></el-input>
+              <el-input v-model="loginForm.email" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="Password">
-              <el-input v-model="form.password" autocomplete="off"></el-input>
+              <el-input v-model="loginForm.password" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item>
-            <el-button @click="dialogFormVisible = false">cancel</el-button>
+            <el-button @click="loginFormVisible = false">cancel</el-button>
             <el-button type="primary" @click="submitForm('form')">confirm</el-button>
             </el-form-item>
           </el-form>
@@ -50,11 +50,27 @@
       </el-col>
       <!-- content -->
       <el-col :span="18">
-        <a-card title="Default size card" style="width: 300px">
-          <p>name:</p>
-          <p>rate:</p>
-          <p>status:</p>
-        </a-card>
+        <!-- name  -->
+        <el-row>
+        </el-row>
+        <!-- location -->
+        <el-row>
+        </el-row>
+        <!-- opening hour -->
+        <el-row>
+        </el-row>
+        <!-- contact -->
+        <el-row>
+        </el-row>
+        <!-- relative information -->
+        <el-row>
+        </el-row>
+        <!-- delivery fee -->
+        <el-row>
+        </el-row>
+        <!-- apply -->
+        <el-row>
+        </el-row>
       </el-col>
       <!-- content end -->
     </el-row>
@@ -81,9 +97,9 @@
 
     data() {
       return {
-        dialogFormVisible: false,
+        loginFormVisible: false,
 
-        form: {
+        loginForm: {
             email: '',
             password: ''
         },
