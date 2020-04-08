@@ -12,7 +12,9 @@
     "ant-design-vue": "^1.5.0",
     "core-js": "^3.6.4",
     "element-ui": "^2.13.0",
-    "vue": "^2.6.11"
+    "reqwest": "^2.0.5",
+    "vue": "^2.6.11",
+    "vue-infinite-scroll": "^2.0.2"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.2.0",
