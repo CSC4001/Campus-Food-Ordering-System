@@ -6,7 +6,7 @@
 <h2>添加菜品</h2>
 
     <p/>
-    <a class='btn btn-lg btn-success' href="{{ url_for('dishes',shop_id=shop_id) }}">返回</a>
+    <a class='btn btn-lg btn-success' href="{{ url_for('shopSystem.dishes',shop_id=shop_id) }}">返回</a>
 
     <div class="hello-form">
         {{ render_form(form, action=request.full_path) }}

@@ -5,11 +5,16 @@
     :copyright: © 2018 Grey Li <withlihui@gmail.com>
     :license: MIT, see LICENSE for more details.
 """
-from flask import flash, redirect, url_for, render_template, abort
+from flask import flash, redirect, url_for, render_template, abort, Blueprint
+from shopSystem.models import *
+from shopSystem.forms import *
 
-from shopSystem import app, db
-from shopSystem.forms import ShopInfoForm, ProductInfoForm, DeleteForm
-from shopSystem.models import Shop, Product
+# from shopSystem import app, db
+# from shopSystem.forms import ShopInfoForm, ProductInfoForm, DeleteForm
+# from shopSystem.models import Shop, Product
+
+shopSystem_bp = Blueprint("shopSystem",__name__, static_folder='../static',template_folder='../templates')
+
 
 # TODO: need connection to user system
 # TODO: jsonify everything
@@ -18,7 +23,7 @@ index route "/" : display the shop in the database
 '''
 # TODO: Display according to shop owners
 # TODO: Add application of adding new shops
-@app.route('/', methods=['GET', 'POST'])
+@shopSystem_bp.route('/', methods=['GET', 'POST'])
 def index():
     messages = Shop.query.order_by(Shop.shop_name.desc()).all()
     return render_template('index.html', messages=messages)
@@ -26,7 +31,7 @@ def index():
 '''
 shop index route "/shop_<int:shop_id>" : display shop information
 '''
-@app.route('/shop_<int:shop_id>')
+@shopSystem_bp.route('/shop_<int:shop_id>')
 def shop_index(shop_id):
     message = Shop.query.filter_by(shop_id=shop_id).first()
     return render_template('shop_index.html', message=message)
@@ -36,14 +41,14 @@ def shop_index(shop_id):
 edit route "/shop_<int:shop_id>/edit" : edit shop information
 '''
 # TODO: need to add application of pending / undo pending
-@app.route('/shop_<int:shop_id>/edit', methods=['GET', 'POST'])
+@shopSystem_bp.route('/shop_<int:shop_id>/edit', methods=['GET', 'POST'])
 def edit_shop(shop_id):
     # if shop is closed, cannot enter this page
     form = ShopInfoForm()
     shop = Shop.query.get(shop_id)
     if shop.shop_status == '已关店':
         flash('该店铺已关闭。')
-        return redirect(url_for('index'))
+        return redirect(url_for('shopSystem.index'))
     if form.validate_on_submit():
         shop.shop_name = form.shop_name.data
         shop.shop_contact = form.shop_contact.data
@@ -54,12 +59,12 @@ def edit_shop(shop_id):
         shop.shop_delivery_fee = form.shop_delivery_fee.data
         if shop.shop_status == '停业整顿':
             flash('当前状态无法操作。请联系管理员申请复业。')
-            return redirect(url_for('edit_shop',shop_id=shop_id))
+            return redirect(url_for('shopSystem.edit_shop',shop_id=shop_id))
         else:
             shop.shop_status = form.shop_status.data
         db.session.commit()
         flash('Successful update to shop info!')
-        return redirect(url_for('shop_index',shop_id=shop_id))
+        return redirect(url_for('shopSystem.shop_index',shop_id=shop_id))
     form.shop_name.data = shop.shop_name
     form.shop_contact.data = shop.shop_contact
     form.shop_location.data = shop.shop_location
@@ -71,10 +76,10 @@ def edit_shop(shop_id):
     return render_template('edit_shop.html', form=form, shop_id=shop_id)
 
 '''
-dishes management route "/shop_<int:shop_id>/dishes" : displaying dishes of a shop
+dishes management route "/shop_<int:shop_id>/dishes" : displaying dishes of a shop 
 '''
 # TODO: did not specify searching function in this page
-@app.route('/shop_<int:shop_id>/dishes')
+@shopSystem_bp.route('/shop_<int:shop_id>/dishes')
 def dishes(shop_id):
     form = DeleteForm()
     messages = Product.query.filter_by(shop_id=shop_id).all()
@@ -83,7 +88,7 @@ def dishes(shop_id):
 '''
 dishes adder route "/shop_<int:shop_id>/dish_<int:product_id>/add : adding a dish
 '''
-@app.route('/shop_<int:shop_id>/add', methods=['GET', 'POST'])
+@shopSystem_bp.route('/shop_<int:shop_id>/add', methods=['GET', 'POST'])
 def add_dish(shop_id):
     form = ProductInfoForm()
     if form.validate_on_submit():
@@ -101,13 +106,13 @@ def add_dish(shop_id):
         product.shop=Shop.query.get(shop_id)
         db.session.commit()
         flash('成功加入新菜品!')
-        return redirect(url_for('dishes',shop_id=shop_id))
+        return redirect(url_for('shopSystem.dishes',shop_id=shop_id))
     return render_template('add_dish.html', form=form, shop_id=shop_id)
 
 '''
 dishes editor route "/shop_<int:shop_id>/dish_<int:product_id>/edit : edit info of a dish
 '''
-@app.route('/shop_<int:shop_id>/dish_<int:product_id>/edit', methods=['GET', 'POST'])
+@shopSystem_bp.route('/shop_<int:shop_id>/dish_<int:product_id>/edit', methods=['GET', 'POST'])
 def edit_dish(shop_id, product_id):
     form = ProductInfoForm()
     product = Product.query.get(product_id)
@@ -117,7 +122,7 @@ def edit_dish(shop_id, product_id):
         product.product_info = form.product_info.data
         db.session.commit()
         flash('成功修改菜品信息！')
-        return redirect(url_for('dishes',shop_id=shop_id))
+        return redirect(url_for('shopSystem.dishes',shop_id=shop_id))
     form.product_info.data = product.product_info
     form.product_price.data = product.product_price
     form.product_name.data = product.product_name
@@ -126,7 +131,7 @@ def edit_dish(shop_id, product_id):
 '''
 dishes deletor route "/shop_<int:shop_id>/dish_<int:product_id>/delete : delete a dish
 '''
-@app.route('/shop_<int:shop_id>/dish_<int:product_id>/delete', methods=['POST'])
+@shopSystem_bp.route('/shop_<int:shop_id>/dish_<int:product_id>/delete', methods=['POST'])
 def delete_dish(shop_id,product_id):
     form = DeleteForm()
     if form.validate_on_submit():
@@ -136,10 +141,10 @@ def delete_dish(shop_id,product_id):
         flash('菜品已被删除！')
     else:
         abort(400)
-    return redirect(url_for('dishes',shop_id=shop_id))
+    return redirect(url_for('shopSystem.dishes',shop_id=shop_id))
 
 '''
-@app.route('/add/<int:shop_id>', methods=['GET', 'POST'])
+@shopSystem_bp.route('/add/<int:shop_id>', methods=['GET', 'POST'])
 def edit_note(shop_id):
     form = ShopInfoForm()
     shop = Shop.query.get(shop_id)
@@ -158,7 +163,7 @@ def edit_note(shop_id):
                         shop_info = shop_info)
         db.session.add(message)
         db.session.commit()
-        flash('Successful update to shop info!')
+        flash('Successful update to shop  info!')
         return redirect(url_for('index'))
     return render_template('edit_note.html', form=form)
 '''
