@@ -14,10 +14,10 @@ import base64,random
 from flask import Flask, render_template
 
 
-from shop_and_admin.shopSystem.settings import config
-from shop_and_admin.shopSystem.blueprint.shopSystem import shopSystem_bp
-from shop_and_admin.shopSystem.extensions import bootstrap, db, moment
-from shop_and_admin.shopSystem.models import *
+from shopSystem.settings import config
+from shopSystem.blueprint.shopSystem import shopSystem_bp
+from shopSystem.extensions import bootstrap, db, moment
+from shopSystem.models import *
 
 def create_app(config_name=None):
     if config_name is None:

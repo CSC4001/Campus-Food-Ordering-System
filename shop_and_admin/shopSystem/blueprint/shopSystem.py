@@ -6,15 +6,14 @@
     :license: MIT, see LICENSE for more details.
 """
 from flask import flash, redirect, url_for, render_template, abort, Blueprint
-from shop_and_admin.shopSystem.extensions import db
-from shop_and_admin.shopSystem.models import *
-from shop_and_admin.shopSystem.forms import *
+from shopSystem.models import *
+from shopSystem.forms import *
 
 # from shopSystem import app, db
 # from shopSystem.forms import ShopInfoForm, ProductInfoForm, DeleteForm
 # from shopSystem.models import Shop, Product
 
-shopSystem_bp = Blueprint("shopSystem",__name__)
+shopSystem_bp = Blueprint("shopSystem",__name__, static_folder='../static',template_folder='../templates')
 
 
 # TODO: need connection to user system

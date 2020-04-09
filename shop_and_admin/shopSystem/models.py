@@ -8,7 +8,7 @@
 
 from datetime import datetime
 
-from shop_and_admin.shopSystem.extensions import db
+from shopSystem.extensions import db
 
 # shop database model is designed according to the proposal.
 # TODO: deleted time, user_id not used yet
