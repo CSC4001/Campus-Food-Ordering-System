@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block content %}
+    <div class="Text">
+        <p>{{ welcome }}</p>
+    </div>
+    <div class="Link">
+        <a href="{{ url_for('login')}}" title="Go to login page">Login</a>
+    </div>
+    <div class="Link">
+        <a href="{{ url_for('register')}}" title="Go to register page">Register</a>
+    </div>
+    <div class="Link">
+        <a href="{{ url_for('personal_center')}}" title="Go to personal center page">Personal Center</a>
+    </div>
+    <div class="logout-form">
+        {{ render_form(logout_form, action=request.full_path) }}
+    </div>
+{% endblock %}
