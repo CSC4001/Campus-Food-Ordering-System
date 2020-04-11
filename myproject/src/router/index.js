@@ -9,6 +9,7 @@ import OrderManagement from '@/components/OrderManagement'
 import Information from '@/components/Information'
 // import Sidebar from '@/components/Sidebar'
 // import Content from '@/components/Content'
+// import Header from '@/components/Header'
 
 Vue.use(Router)
 
@@ -19,6 +20,21 @@ export default new Router({
             name: 'Home',
             component: Home
         },
+        // {
+        //     path: '/sidebar',
+        //     name: 'Sidebar',
+        //     component: Sidebar
+        // },
+        // {
+        //     path: '/header',
+        //     name: 'Header',
+        //     component: Header
+        // },
+        // {
+        //     path: '/content',
+        //     name: 'Content',
+        //     component: Content
+        // },
         {
             path: '/personalinfo',
             name: 'PersonalInfo',

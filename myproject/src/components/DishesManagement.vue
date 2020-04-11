@@ -4,17 +4,17 @@
     <!-- login -->
     <el-row type=flex justify="end">
       <el-col :span="2">
-        <el-button type="text" @click="dialogFormVisible = true">Sign in</el-button>
-        <el-dialog title="Sign in" :visible.sync="dialogFormVisible">
-          <el-form :model="form">
+        <el-button type="text" @click="loginFormVisible = true">Sign in</el-button>
+        <el-dialog title="Sign in" :visible.sync="loginFormVisible">
+          <el-form :model="loginForm">
             <el-form-item label="Email">
-              <el-input v-model="form.email" autocomplete="off"></el-input>
+              <el-input v-model="loginForm.email" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item label="Password">
-              <el-input v-model="form.password" autocomplete="off"></el-input>
+              <el-input v-model="loginForm.password" autocomplete="off"></el-input>
             </el-form-item>
             <el-form-item>
-            <el-button @click="dialogFormVisible = false">cancel</el-button>
+            <el-button @click="loginFormVisible = false">cancel</el-button>
             <el-button type="primary" @click="submitForm('form')">confirm</el-button>
             </el-form-item>
           </el-form>
@@ -61,6 +61,27 @@
             </el-form-item>
           </el-form>
         </el-row>
+        <!-- add dishes -->
+        <el-row type="flex" justify="center">
+          <el-button @click="dishesFormVisible = true">add dishes</el-button>
+          <el-dialog title="dishes information" :visible.sync="dishesFormVisible">
+          <el-form ref="form" :model="dishesForm" label-width="80px">
+            <el-form-item label="name">
+              <el-input v-model="dishesForm.name"></el-input>
+            </el-form-item>
+            <el-form-item label="price">
+              <el-input v-model="dishesForm.price"></el-input>
+            </el-form-item>
+            <el-form-item label="discription">
+              <el-input v-model="dishesForm.discription"></el-input>
+            </el-form-item>
+            <el-form-item>
+            <el-button @click="loginFormVisible = false">cancel</el-button>
+            <el-button type="primary" @click="submitForm('form')">create</el-button>
+            </el-form-item>
+          </el-form>
+        </el-dialog>
+        </el-row>
         <!-- dishes  -->
         <el-row>
           <div
@@ -103,8 +124,6 @@
   import infiniteScroll from 'vue-infinite-scroll';
   const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
 
-
-
   const siderData = [
     {
       title: 'Help',
@@ -122,13 +141,19 @@
     directives: { infiniteScroll },
     data() {
       return {
-        dialogFormVisible: false,
+        loginFormVisible: false,
+        dishesFormVisible: false,
         data: [],
         loading: false,
         busy: false,
-        form: {
+        loginForm: {
             email: '',
             password: ''
+        },
+        dishesForm: {
+          name: '',
+          price: '',
+          discription: '',
         },
         formSearch: {
           searchtype: '',
