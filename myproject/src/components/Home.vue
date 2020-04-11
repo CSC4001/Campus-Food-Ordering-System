@@ -23,7 +23,7 @@
     </el-row>
     <!-- location -->
     <el-row type="flex" justify="space-around">
-        <el-col :span="4"><el-link>Front Page</el-link></el-col>
+        <el-col :span="4"><el-link v-on:click="test">Front Page</el-link></el-col>
         <el-col :span="4"><el-link>Diligentia College</el-link></el-col>
         <el-col :span="4"><el-link>Shaw College</el-link></el-col>
         <el-col :span="4"><el-link>Student Centre</el-link></el-col>
@@ -85,7 +85,7 @@
             </div>
           </el-col>
           <!-- search -->
-          <el-col :span="10" offset="1">
+          <el-col :span="10" :offset="1">
             <el-form :inline="true" :model="formSearch" size="mini">
               <el-form-item >
                 <el-select v-model="formSearch.searchtype" placeholder="Shop">
@@ -166,6 +166,8 @@
 </template>
 
 <script>
+  import axios from 'axios'
+  
   const data = [
     {
       title: 'Personal Info',
@@ -228,7 +230,11 @@
       onSubmit() {
         console.log('submit!');
       },
-
+      test() {
+        axios.get('http://127.0.0.1:5000').then(function (r) {
+            console.log(r.data)
+        })
+      }
 
     }
   }
