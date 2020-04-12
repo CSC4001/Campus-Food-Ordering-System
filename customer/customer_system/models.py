@@ -24,9 +24,10 @@ class User(db.Model):
     user_status = db.Column(db.Enum('normal', 'blocked'), nullable=False, default='normal')
 
     # relationships
-    # shops = db.relationship('shops', back_populates='user', cascade='all, delete-orphan') # user and shops
-    # orders = db.relationship('orders', back_populates='user', cascade='all, delete-orphan') # user and orders
-    # applications = db.relationship('applications', back_populates='user', cascade='all, delete-orphan') # user and applications
+    shops = db.relationship('Shop', back_populates='user', cascade='all, delete-orphan') # user and shops
+    orders = db.relationship('Order', back_populates='user', cascade='all, delete-orphan') # user and orders
+    applications = db.relationship('Application', back_populates='user', cascade='all, delete-orphan') # user and applications
+    bookmarked_shops = db.relationship('Shop', secondary='bookmarks', back_populates='bookmarked_by_users') # users and shops which they bookmarked
 
 
 class Shop(db.Model):
@@ -50,9 +51,10 @@ class Shop(db.Model):
     shop_status = db.Column(db.Enum('open', 'closed', 'blocked', 'cancelled'), nullable=False)
 
     # relationships
-    # user = db.relationship('users', back_populates='shops') # user and shops
-    # products = db.relationship('products', back_populates='shop', cascade='all, delete-orphan') # shop and products
-    # orders = db.relationship('orders', back_populates='shop', cascade='all, delete-orphan') # shop and orders
+    user = db.relationship('User', back_populates='shops') # user and shops
+    products = db.relationship('Product', back_populates='shop', cascade='all, delete-orphan') # shop and products
+    orders = db.relationship('Order', back_populates='shop', cascade='all, delete-orphan') # shop and orders
+    bookmarked_by_users = db.relationship('User', secondary='bookmarks', back_populates='bookmarked_shops') # shops and users whom they bookmarked by
 
 
 class Product(db.Model):
@@ -66,7 +68,7 @@ class Product(db.Model):
     total_sale = db.Column(db.Integer, nullable=False)
 
     # relationships
-    # shop = db.relationship('shops', back_populates='products') # shop and products
+    shop = db.relationship('Shop', back_populates='products') # shop and products
 
 
 class Order(db.Model):
@@ -85,9 +87,9 @@ class Order(db.Model):
     order_status = db.Column(db.Enum('pending', 'approved', 'denied', 'delivering', 'finished', 'cancelled'), nullable=False)
 
     # relationships
-    # user = db.relationship('users', back_populates='orders') # user and orders
-    # shop = db.relationship('shops', back_populates='orders') # shop and orders
-    # purchased_products = db.relationship('purchased_products', back_populates='order', cascade='all, delete-orphan') # order and purchased products
+    user = db.relationship('User', back_populates='orders') # user and orders
+    shop = db.relationship('Shop', back_populates='orders') # shop and orders
+    purchased_products = db.relationship('Purchased_Product', back_populates='order', cascade='all, delete-orphan') # order and purchased products
 
 
 class Purchased_Product(db.Model):
@@ -99,7 +101,7 @@ class Purchased_Product(db.Model):
     quantity = db.Column(db.Integer, nullable=False, default=1)
 
     # relationships
-    # order = db.relationship('orders', back_populates='purchased_products') # order and purchased products
+    order = db.relationship('Order', back_populates='purchased_products') # order and purchased products
 
 
 class Application(db.Model):
@@ -119,7 +121,7 @@ class Application(db.Model):
     application_status = db.Column(db.Enum('pending', 'approved', 'denied'), nullable=False)
 
     # relationships
-    # user = db.relationship('users', back_populates='applications') # user and applications
+    user = db.relationship('User', back_populates='applications') # user and applications
 
 
 class Bookmark(db.Model):
