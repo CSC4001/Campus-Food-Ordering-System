@@ -4,10 +4,10 @@
 {% block navigator %}
     <ul class="nav nav-tabs nav-justified">
         <li class="active"><a href="#">首页&nbsp;&nbsp;   </a></li>
-        <li><a href="{{ url_for('shopSystem.edit_shop', shop_id=message.shop_id) }}">基本信息&nbsp;&nbsp;   </a></li>
-        <li><a href="{{ url_for('shopSystem.dishes', shop_id=message.shop_id) }}">菜品管理&nbsp;&nbsp;   </a></li>
+        <li><a href="{{ url_for('shop.edit_shop', shop_id=message.id) }}">基本信息&nbsp;&nbsp;   </a></li>
+        <li><a href="{{ url_for('shop.dishes', shop_id=message.id) }}">菜品管理&nbsp;&nbsp;   </a></li>
         <li><a href="#">订单管理&nbsp; &nbsp;  </a></li>
-        <li><a href="{{ url_for('shopSystem.index') }}">返回上一层&nbsp; &nbsp;  </a></li>
+        <li><a href="{{ url_for('shop.index') }}">返回上一层&nbsp; &nbsp;  </a></li>
     </ul>
 {% endblock %}
 

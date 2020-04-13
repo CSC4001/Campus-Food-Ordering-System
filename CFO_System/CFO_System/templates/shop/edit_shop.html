@@ -6,7 +6,7 @@
 <h2>详细信息</h2>
 
     <p/>
-    <a class='btn btn-lg btn-success' href="{{ url_for('shopSystem.shop_index',shop_id=shop_id) }}">返回</a>
+    <a class='btn btn-lg btn-success' href="{{ url_for('shop.shop_index',shop_id=shop_id) }}">返回</a>
 
     <div class="hello-form">
         {{ render_form(form, action=request.full_path) }}

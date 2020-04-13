@@ -13,7 +13,7 @@ from CFO_System.forms import *
 # from CFO_System.forms import ShopInfoForm, ProductInfoForm, DeleteForm
 # from CFO_System.models import Shop, Product
 
-shop_bp = Blueprint("shop",__name__, static_folder='../static',template_folder='../templates')
+shop_bp = Blueprint("shop",__name__)
 
 
 # TODO: need connection to user system
@@ -26,15 +26,19 @@ index route "/" : display the shop in the database
 @shop_bp.route('/', methods=['GET', 'POST'])
 def index():
     messages = Shop.query.order_by(Shop.shop_name.desc()).all()
-    return render_template('index.html', messages=messages)
+    return render_template('shop/index.html', messages=messages)
 
 '''
 shop index route "/shop_<int:shop_id>" : display shop information
 '''
 @shop_bp.route('/shop_<int:shop_id>')
 def shop_index(shop_id):
-    message = Shop.query.filter_by(shop_id=shop_id).first()
-    return render_template('shop_index.html', message=message)
+    shop = Shop.query.get(shop_id)
+    if shop.shop_status == 'cancelled':
+        flash('This shop is shut down.')
+        return redirect(url_for('shop.index'))
+    message = Shop.query.filter_by(id=shop_id).first()
+    return render_template('shop/shop_index.html', message=message)
 
 
 '''
@@ -46,9 +50,6 @@ def edit_shop(shop_id):
     # if shop is closed, cannot enter this page
     form = ShopInfoForm()
     shop = Shop.query.get(shop_id)
-    if shop.shop_status == '已关店':
-        flash('该店铺已关闭。')
-        return redirect(url_for('shop.index'))
     if form.validate_on_submit():
         shop.shop_name = form.shop_name.data
         shop.shop_contact = form.shop_contact.data
@@ -57,8 +58,8 @@ def edit_shop(shop_id):
         shop.shop_license_number = form.shop_license_number.data
         shop.shop_info = form.shop_info.data
         shop.shop_delivery_fee = form.shop_delivery_fee.data
-        if shop.shop_status == '停业整顿':
-            flash('当前状态无法操作。请联系管理员申请复业。')
+        if shop.shop_status == 'blocked':
+            flash('This shop is blocked. Please contact the administrator.')
             return redirect(url_for('shop.edit_shop',shop_id=shop_id))
         else:
             shop.shop_status = form.shop_status.data
@@ -73,7 +74,7 @@ def edit_shop(shop_id):
     form.shop_info.data = shop.shop_info
     form.shop_delivery_fee.data = form.shop_delivery_fee.choices[int(shop.shop_delivery_fee)][0]
     form.shop_status.data = shop.shop_status
-    return render_template('edit_shop.html', form=form, shop_id=shop_id)
+    return render_template('shop/edit_shop.html', form=form, shop_id=shop_id)
 
 '''
 dishes management route "/shop_<int:shop_id>/dishes" : displaying dishes of a shop 
@@ -82,8 +83,12 @@ dishes management route "/shop_<int:shop_id>/dishes" : displaying dishes of a sh
 @shop_bp.route('/shop_<int:shop_id>/dishes')
 def dishes(shop_id):
     form = DeleteForm()
+    shop = Shop.query.get(shop_id)
     messages = Product.query.filter_by(shop_id=shop_id).all()
-    return render_template('dishes.html',messages=messages, shop_id=shop_id,form=form)
+    if shop.shop_status == 'blocked':
+        flash('This shop is blocked. Please contact the administrator.')
+        return redirect(url_for('shop.shop_index',shop_id=shop_id))
+    return render_template('shop/dishes.html',messages=messages, shop_id=shop_id,form=form)
 
 '''
 dishes adder route "/shop_<int:shop_id>/dish_<int:product_id>/add : adding a dish
@@ -107,7 +112,7 @@ def add_dish(shop_id):
         db.session.commit()
         flash('成功加入新菜品!')
         return redirect(url_for('shop.dishes',shop_id=shop_id))
-    return render_template('add_dish.html', form=form, shop_id=shop_id)
+    return render_template('shop/add_dish.html', form=form, shop_id=shop_id)
 
 '''
 dishes editor route "/shop_<int:shop_id>/dish_<int:product_id>/edit : edit info of a dish
@@ -126,7 +131,7 @@ def edit_dish(shop_id, product_id):
     form.product_info.data = product.product_info
     form.product_price.data = product.product_price
     form.product_name.data = product.product_name
-    return render_template('edit_dish.html',form=form,shop_id=shop_id)
+    return render_template('shop/edit_dish.html',form=form,shop_id=shop_id)
 
 '''
 dishes deletor route "/shop_<int:shop_id>/dish_<int:product_id>/delete : delete a dish

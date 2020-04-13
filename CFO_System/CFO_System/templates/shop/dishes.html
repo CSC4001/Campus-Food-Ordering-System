@@ -3,11 +3,11 @@
 
 {% block navigator %}
     <ul class="nav nav-tabs nav-justified">
-        <li class="active"><a href="{{url_for('shopSystem.shop_index',shop_id=shop_id)}}">首页&nbsp;&nbsp;   </a></li>
-        <li><a href="{{ url_for('shopSystem.edit_shop', shop_id=shop_id) }}">基本信息&nbsp;&nbsp;   </a></li>
-        <li><a href="{{ url_for('shopSystem.dishes', shop_id=shop_id) }}">菜品管理&nbsp;&nbsp;   </a></li>
+        <li class="active"><a href="{{url_for('shop.shop_index',shop_id=shop_id)}}">首页&nbsp;&nbsp;   </a></li>
+        <li><a href="{{ url_for('shop.edit_shop', shop_id=shop_id) }}">基本信息&nbsp;&nbsp;   </a></li>
+        <li><a href="{{ url_for('shop.dishes', shop_id=shop_id) }}">菜品管理&nbsp;&nbsp;   </a></li>
         <li><a href="#">订单管理&nbsp; &nbsp;  </a></li>
-        <li><a href="{{ url_for('shopSystem.shop_index',shop_id=shop_id) }}">返回上一层&nbsp; &nbsp;  </a></li>
+        <li><a href="{{ url_for('shop.shop_index',shop_id=shop_id) }}">返回上一层&nbsp; &nbsp;  </a></li>
     </ul>
 {% endblock %}
 
@@ -15,7 +15,7 @@
 
     <h5>菜品列表
         <small class="text-muted">总{{ messages|length }} 个菜品</small>
-        <a class='btn float-right' href="{{ url_for('shopSystem.add_dish', shop_id=shop_id) }}">添加新菜品</a>
+        <a class='btn float-right' href="{{ url_for('shop.add_dish', shop_id=shop_id) }}">添加新菜品</a>
         <small class="float-right">
             <a href="#bottom" title="Go Bottom">&darr;</a>
         </small>
@@ -23,7 +23,7 @@
     <div class="list-group">
         {% for message in messages %}
             <a class="list-group-item list-group-item-action flex-column"
-               href="{{ url_for('shopSystem.edit_dish', shop_id=message.shop_id, product_id=message.product_id) }}">
+               href="{{ url_for('shop.edit_dish', shop_id=message.shop_id, product_id=message.id) }}">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1 text-success">{{ message.product_name }}
                     </h5>
@@ -34,7 +34,7 @@
                 <br /><p>{{ message.product_info }}</p>
                 <small class="text-muted ">销量 {{ message.total_sale }}
                 </small>
-                <form class="float-right" method="post" action="{{ url_for('shopSystem.delete_dish', shop_id=message.shop_id, product_id=message.product_id) }}">
+                <form class="float-right" method="post" action="{{ url_for('shop.delete_dish', shop_id=message.shop_id, product_id=message.id) }}">
                     {{ form.csrf_token }}
                     {{ form.submit(class='btn',value="删除菜品") }}
                 </form>
