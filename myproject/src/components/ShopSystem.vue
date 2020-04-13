@@ -23,7 +23,8 @@
     </el-row>
     <!-- location -->
     <el-row type="flex" justify="space-around">
-        <el-col :span="4"><el-link href="http://localhost:8080/#/shopsystem">Front Page</el-link></el-col>
+        <!--<el-col :span="4"><el-link href="http://localhost:8080/#/shopsystem">Front Page</el-link></el-col>-->
+        <el-col :span="4"><el-link href="http://localhost:8080/#/shopsystem" v-on:click="test">Front Page</el-link></el-col>
         <el-col :span="4"><el-link href="http://localhost:8080/#/dishesmanagement">Dishes Management</el-link></el-col>
         <el-col :span="4"><el-link href="http://localhost:8080/#/ordermanagement">Order Management</el-link></el-col>
         <el-col :span="4"><el-link href="http://localhost:8080/#/information">Infomation</el-link></el-col>
@@ -62,7 +63,7 @@
 </template>
 
 <script>
-
+  import axios from 'axios'
 
   const siderData = [
     {
@@ -111,6 +112,11 @@
       onSubmit() {
         console.log('submit!');
       },
+      test() {
+        axios.get('http://127.0.0.1:5000').then(function (r) {
+            console.log(r.data)
+        })
+      }
       
      
     
