@@ -1,7 +1,7 @@
 <template>
 <div class = "header" style="height:100%;">
     <el-menu :default-active="activeIndex" mode="horizontal" justify="start" align="middle" @select="handleSelect">
-        <el-menu-item index="1">Front Page</el-menu-item>
+        <el-menu-item index="1"><router-link to="/">Front Page</router-link></el-menu-item>
         <el-menu-item index="2">Diligentia College</el-menu-item>
         <el-menu-item index="3">Shaw College</el-menu-item>
         <el-menu-item index="4">Student Centre</el-menu-item>
