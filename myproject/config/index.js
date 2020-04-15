@@ -11,8 +11,8 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-        '/': {
-            target: '127.0.0.1:5000',
+        '/my_shop': {
+            target: '127.0.0.1:5000/my_shop',
             changeOrigin: true,
         },
     },

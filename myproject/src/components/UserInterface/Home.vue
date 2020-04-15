@@ -9,12 +9,7 @@
                 <Sidebar/> <!-- Fixed Sidebar-->
             </el-aside>
             <el-main>
-                <!-- Alterable Main Content-->
-                <p style="font-size: 25px;">Basic information</p>
-                <div style="margin: 0 auto;">
-                    <el-avatar shape="square" :size="50" :src="squareUrl"></el-avatar>
-                </div>
-                
+                <Main/> <!-- Alterable Main Content-->
             </el-main>
         </el-container>
     </el-container>   
@@ -24,12 +19,11 @@
 <script>
 import Sidebar from '@/components/UserInterface/Sidebar'
 import Header from '@/components/UserInterface/Header'
-// import Main from '@/components/UserInterface/Main'
+import Main from '@/components/UserInterface/Main'
 export default {
     name: 'Home',
     data() {
         return {
-            squareUrl:"https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
         };
     },
     methods: {
@@ -37,7 +31,7 @@ export default {
     components: {
         Header,
         Sidebar,
-        // Main
+        Main
     }
 }
 </script>
