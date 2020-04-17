@@ -16,7 +16,8 @@ from flask import Flask, render_template
 
 from CFO_System.settings import config
 from CFO_System.blueprint.shop import shop_bp
-from CFO_System.extensions import bootstrap, db, moment
+from CFO_System.blueprint.auth import auth_bp
+from CFO_System.extensions import bootstrap, db, moment, login_manager
 from CFO_System.models import *
 
 def create_app(config_name=None):
@@ -25,6 +26,7 @@ def create_app(config_name=None):
     app = Flask('CFO_System')
     app.config.from_object(config[config_name])
 
+    register_logging(app)
     register_extensions(app)
     register_blueprints(app)
     register_errors(app)
@@ -34,13 +36,18 @@ def create_app(config_name=None):
     app.jinja_env.lstrip_blocks = True
     return app
 
+def register_logging(app):
+    pass
+
 def register_extensions(app):
     bootstrap.init_app(app)
     db.init_app(app)
     moment.init_app(app)
+    login_manager.init_app(app)
 
 def register_blueprints(app):
     app.register_blueprint(shop_bp, url_prefix='/my_shop')
+    app.register_blueprint(auth_bp)
 
 def register_errors(app):
     @app.errorhandler(400)
@@ -83,26 +90,35 @@ def register_commands(app):
         location = ['Student Center', 'Shaw College', 'Muse College', 'Deligentia College', 'Harmonia College',
         'Le Tian Building', 'Zhi Ren Building', 'Zhi Xin Building', 'Research A', 'Research B',
         'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D']
-        for i in range(count):
-            #with open('static/favicon.ico','rb') as img:
-            #   img=base64.b64encode(img.read())
-            shop_message = Shop(
-                # user_id = str(fake.random_number(20)),
-                shop_name = fake.company(),
-                shop_info = fake.paragraph(3),
-                shop_delivery_fee = fake.random_int(min=0,max=5),
-                shop_rate = fake.random_int(),
-                shop_rate_number = fake.random_int(),
-                shop_balance = fake.random_number(),
-                shop_contact = fake.phone_number(),
-                shop_location = random.choice(location),
-                shop_location_detail = fake.address(),
-                shop_license_number = str(fake.random_number(32)),
-                shop_status = random.choice(status),
-                # add avatar at the last step
-                #shop_avatar = img
-            )
-            db.session.add(shop_message)
+        # for i in range(count):
+        #     #with open('static/favicon.ico','rb') as img:
+        #     #   img=base64.b64encode(img.read())
+        #     shop_message = Shop(
+        #         # user_id = str(fake.random_number(20)),
+        #         shop_name = fake.company(),
+        #         shop_info = fake.paragraph(3),
+        #         shop_delivery_fee = fake.random_int(min=0,max=5),
+        #         shop_rate = fake.random_int(),
+        #         shop_rate_number = fake.random_int(),
+        #         shop_balance = fake.random_number(),
+        #         shop_contact = fake.phone_number(),
+        #         shop_location = random.choice(location),
+        #         shop_location_detail = fake.address(),
+        #         shop_license_number = str(fake.random_number(32)),
+        #         shop_status = random.choice(status),
+        #         # add avatar at the last step
+        #         #shop_avatar = img
+        #     )
+        #     db.session.add(shop_message)
+
+        # generate a user
+        user = User(
+                    confirmed=True,
+                    user_status = 'normal',
+                    user_name="pony",
+                    email=fake.email())
+        user.set_password('12345678')
+        db.session.add(user)
 
         shop_message = Shop(
             # user_id = str(fake.random_number(20)),
@@ -130,6 +146,20 @@ def register_commands(app):
         )
         db.session.add(product_message)
         product_message.shop = shop_message
+        shop_message.user = user
+
+        admin = Administrator.query.first()
+        if admin is not None:
+            click.echo('The administrator already exists, updating...')
+            admin.username = 'admin'
+            admin.set_password('admin')
+        else:
+            click.echo('Creating the temporary administrator account...')
+            admin = Administrator(
+                administrator_name='admin'
+            )
+            admin.set_password('admin')
+            db.session.add(admin)
         db.session.commit()
         click.echo('Created %d fake messages.' % count)
 

@@ -30,6 +30,17 @@
             <small> &copy; 2020 <a href="https://github.com/CSC4001/Campus-Food-Ordering-System" title="CSC4001 Project">Campus Food Ordering System</a> /
             </small>
             <p><a id="bottom" href="#" title="Go Top">&uarr;</a></p>
+            <p class="float-right">
+                <small>
+                    {% if current_user.is_authenticated %}
+                        <p>Hello, {{ current_user.user_name }} {{ current_user.administrator_name }}!</p>
+                        <a href="{{ url_for('auth.logout', next=request.full_path) }}">Logout</a>
+                    {% else %}
+                        <a  href="{{ url_for('auth.login', next=request.full_path) }}">Login</a>&nbsp;&nbsp;
+                        <a  href="{{ url_for('auth.register') }}">Register</a>
+                    {% endif %}
+                </small>
+            </p>
         {% endblock %}
     </footer>
 </main>

@@ -6,8 +6,12 @@
     :license: MIT, see LICENSE for more details.
 """
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, RadioField, SelectField, FloatField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms import StringField, SubmitField, TextAreaField, RadioField, SelectField, FloatField, PasswordField, BooleanField
+from wtforms.validators import DataRequired, Length, NumberRange, EqualTo, Regexp, Email
+from wtforms import ValidationError
+
+
+from CFO_System.models import User
 
 # shop info form is designed according to web page v2.2 p.16
 class ShopInfoForm(FlaskForm):
@@ -19,7 +23,7 @@ class ShopInfoForm(FlaskForm):
             ('Research A','Research A'), ('Research B','Research B'),('Teaching A','Teaching A'),
             ('Teaching B','Teaching B'), ('Teaching C','Teaching C'), ('Teaching D','Teaching D')]
     shop_name = StringField('店铺名', validators=[DataRequired(), Length(1, 32)])
-    shop_contact = StringField('电话', validators=[DataRequired(), Length(11)])
+    shop_contact = StringField('电话', validators=[DataRequired(), Length(32)])
     shop_location = SelectField('地点', choices=location,validators=[DataRequired()])
     shop_location_detail = TextAreaField('详细地址', validators=[DataRequired(), Length(1, 256)])
     shop_license_number = StringField('证件号', validators=[DataRequired(), Length(32)])
@@ -39,3 +43,26 @@ class ProductInfoForm(FlaskForm):
 # submit form for deletion
 class DeleteForm(FlaskForm):
     submit = SubmitField('Delete')
+
+# login form
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 20)])
+    password = PasswordField('Password', validators=[DataRequired(), Length(1, 128)])
+    remember = BooleanField('Remember me')
+    submit = SubmitField('Log in')
+
+# register form
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(1, 20),
+                                                   Regexp('^[a-zA-Z0-9]*$',
+                                                          message='The username should contain only a-z, A-Z and 0-9.')])
+    email = StringField('Email', validators=[DataRequired(), Length(1, 254), Email()])
+
+    password = PasswordField('Password', validators=[
+        DataRequired(), Length(8, 128), EqualTo('password2')])
+    password2 = PasswordField('Confirm password', validators=[DataRequired()])
+    submit = SubmitField()
+
+    def validate_username(self, field):
+        if User.query.filter_by(user_name=field.data).first():
+            raise ValidationError('The username is already in use.')

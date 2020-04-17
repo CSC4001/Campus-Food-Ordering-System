@@ -12,7 +12,7 @@
     <div class="list-group">
         {% for message in messages %}
             <a class="list-group-item list-group-item-action flex-column"
-               href="{{ url_for('shop.shop_index', shop_id=message.id) }}">
+               href="{{ url_for('shop.shop_index', shop_id=message.shop_id) }}">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1 text-success">{{ message.shop_name }}
                     </h5>

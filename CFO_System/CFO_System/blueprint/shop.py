@@ -6,6 +6,7 @@
     :license: MIT, see LICENSE for more details.
 """
 from flask import flash, redirect, url_for, render_template, abort, Blueprint
+from flask_login import  login_required
 from CFO_System.models import *
 from CFO_System.forms import *
 
@@ -18,6 +19,12 @@ shop_bp = Blueprint("shop",__name__)
 
 # TODO: need connection to user system
 # TODO: jsonify everything
+
+@shop_bp.before_request
+@login_required
+def login_protect():
+    pass
+
 '''
 index route "/" : display the shop in the database
 '''
@@ -37,7 +44,7 @@ def shop_index(shop_id):
     if shop.shop_status == 'cancelled':
         flash('This shop is shut down.')
         return redirect(url_for('shop.index'))
-    message = Shop.query.filter_by(id=shop_id).first()
+    message = Shop.query.filter_by(shop_id=shop_id).first()
     return render_template('shop/shop_index.html', message=message)
 
 
