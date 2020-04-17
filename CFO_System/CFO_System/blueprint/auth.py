@@ -13,25 +13,25 @@ auth_bp = Blueprint("auth",__name__)
 @auth_bp.route('/login',methods=['GET','POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('shop.index')) # return to index if logged in
+        return redirect(url_for('customer.index')) # return to index if logged in
 
     form = LoginForm()
     if form.validate_on_submit():
-        username = form.username.data
+        username = form.email.data
         password = form.password.data
-        remember = form.remember.data
 
         if username == 'admin':
             admin = Administrator.query.filter_by(administrator_name=username).first()
             if username == admin.administrator_name and admin.validate_password(password):
-                login_user(admin, remember)
+                login_user(admin)
                 flash('Welcome back, admin.', 'info')
+                # TODO: admin should redirect to another page
                 return redirect_back()
             flash('Invalid username or password.', 'warning')
         else:
-            user = User.query.filter_by(user_name=username).first()
+            user = User.query.filter_by(email=username).first()
             if user is not None and user.validate_password(form.password.data):
-                login_user(user, remember)
+                login_user(user)
                 flash('Login success.', 'info')
                 return redirect_back()
             flash('Invalid email or password.', 'warning')
@@ -40,14 +40,11 @@ def login():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return redirect(url_for('shop.index'))
+        return redirect(url_for('customer.index'))
 
     form = RegisterForm()
     if form.validate_on_submit():
         username = form.username.data
-        if username == 'admin':
-            flash('Invalid username.', 'warning')
-            return redirect(url_for('.register'))
         email = form.email.data.lower()
         password = form.password.data
         user = User(email=email, user_name=username)
@@ -63,8 +60,7 @@ def register():
 def logout():
     logout_user()
     flash('Logout success.', 'info')
-    return redirect(url_for('auth.login'))
-    # return redirect_back()
+    return redirect(url_for('customer.index'))
 
 
 

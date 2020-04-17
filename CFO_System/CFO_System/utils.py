@@ -15,7 +15,9 @@ try:
 except ImportError:
     from urllib.parse import urlparse, urljoin
 
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, flash
+from flask_login import current_user
+from CFO_System.models import Shop
 
 
 
@@ -33,3 +35,10 @@ def redirect_back(default='shop.index', **kwargs):
         if is_safe_url(target):
             return redirect(target)
     return redirect(url_for(default, **kwargs))
+
+def is_my_shop(shop_id):
+    shop = Shop.query.filter_by(shop_id=shop_id).first_or_404()
+    if shop not in current_user.shops:
+        flash("This is not your shop!",'warning')
+        return False
+    return True

@@ -17,6 +17,8 @@ from flask import Flask, render_template
 from CFO_System.settings import config
 from CFO_System.blueprint.shop import shop_bp
 from CFO_System.blueprint.auth import auth_bp
+from CFO_System.blueprint.customer import customer_bp
+from CFO_System.blueprint.admin import admin_bp
 from CFO_System.extensions import bootstrap, db, moment, login_manager
 from CFO_System.models import *
 
@@ -30,8 +32,8 @@ def create_app(config_name=None):
     register_extensions(app)
     register_blueprints(app)
     register_errors(app)
+    register_template_context(app)
     register_commands(app)
-
     app.jinja_env.trim_blocks = True
     app.jinja_env.lstrip_blocks = True
     return app
@@ -48,6 +50,14 @@ def register_extensions(app):
 def register_blueprints(app):
     app.register_blueprint(shop_bp, url_prefix='/my_shop')
     app.register_blueprint(auth_bp)
+    app.register_blueprint(customer_bp)
+    app.register_blueprint(admin_bp, url_prefix='/admin')
+
+def register_template_context(app):
+    @app.context_processor
+    def make_template_context():
+        from flask_login import current_user
+        return dict(current_user=current_user)
 
 def register_errors(app):
     @app.errorhandler(400)
@@ -113,19 +123,19 @@ def register_commands(app):
 
         # generate a user
         user = User(
-                    confirmed=True,
                     user_status = 'normal',
                     user_name="pony",
-                    email=fake.email())
+                    email="pony@qq.com")
         user.set_password('12345678')
         db.session.add(user)
 
+        # creating a shop and product
         shop_message = Shop(
             # user_id = str(fake.random_number(20)),
             shop_name = "兰小花",
             shop_info = "卖牛肉面的",
             shop_delivery_fee = fake.random_int(min=0,max=5),
-            shop_rate = fake.random_int(),
+            shop_rate_total = fake.random_int(),
             shop_rate_number = fake.random_int(),
             shop_balance = fake.random_number(),
             shop_contact = fake.phone_number(),
@@ -148,10 +158,11 @@ def register_commands(app):
         product_message.shop = shop_message
         shop_message.user = user
 
+        # creating administrator
         admin = Administrator.query.first()
         if admin is not None:
             click.echo('The administrator already exists, updating...')
-            admin.username = 'admin'
+            admin.administrator_name = 'admin'
             admin.set_password('admin')
         else:
             click.echo('Creating the temporary administrator account...')

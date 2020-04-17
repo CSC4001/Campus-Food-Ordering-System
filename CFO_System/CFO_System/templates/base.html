@@ -14,7 +14,7 @@
         <h1 class="text-center display-4">
             <a href="{{ url_for('shop.index') }}" class="text-success"><strong>Campus Food Ordering System</strong></a>
             <p/><p/>
-            <small class="text-muted sub-title">店铺管理界面</small>
+            <small class="text-muted sub-title">校园订餐系统</small>
         </h1>
     </header>
     {% for message in get_flashed_messages() %}
@@ -33,7 +33,7 @@
             <p class="float-right">
                 <small>
                     {% if current_user.is_authenticated %}
-                        <p>Hello, {{ current_user.user_name }} {{ current_user.administrator_name }}!</p>
+                        <p>Hello, {{ current_user.user_name }}!</p>
                         <a href="{{ url_for('auth.logout', next=request.full_path) }}">Logout</a>
                     {% else %}
                         <a  href="{{ url_for('auth.login', next=request.full_path) }}">Login</a>&nbsp;&nbsp;
