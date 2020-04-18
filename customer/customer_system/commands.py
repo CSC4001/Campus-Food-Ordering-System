@@ -51,4 +51,11 @@ def forge(count):
 @app.cli.command()
 def viewdb():
     """Show the database content."""
+    click.echo(db.session.execute('select * from administrators').fetchall())
     click.echo(db.session.execute('select * from users').fetchall())
+    click.echo(db.session.execute('select * from shops').fetchall())
+    click.echo(db.session.execute('select * from products').fetchall())
+    click.echo(db.session.execute('select * from orders').fetchall())
+    click.echo(db.session.execute('select * from purchased_products').fetchall())
+    click.echo(db.session.execute('select * from applications').fetchall())
+    click.echo(db.session.execute('select * from bookmarks').fetchall())
