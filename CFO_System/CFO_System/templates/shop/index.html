@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% from 'bootstrap/form.html' import render_form %}
 
+{% block navigator %}
+    <ul class="nav nav-tabs nav-justified">
+        <li><a href="{{ url_for('customer.index') }}">返回上一层&nbsp; &nbsp;  </a></li>
+    </ul>
+{% endblock %}
+
 {% block content %}
 
     <h5>店铺列表
@@ -25,4 +31,12 @@
             {% endfor %}
 
     </div>
+    <div>
+        <p>
+
+        </p>
+    </div>
+    <a class='btn btn-lg btn-success' href="{{ url_for('shop.apply_new_shop') }}">create a new shop</a>
+
+
 {% endblock %}

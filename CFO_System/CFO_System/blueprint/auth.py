@@ -25,8 +25,7 @@ def login():
             if username == admin.administrator_name and admin.validate_password(password):
                 login_user(admin)
                 flash('Welcome back, admin.', 'info')
-                # TODO: admin should redirect to another page
-                return redirect_back()
+                return redirect(url_for('admin.index'))
             flash('Invalid username or password.', 'warning')
         else:
             user = User.query.filter_by(email=username).first()

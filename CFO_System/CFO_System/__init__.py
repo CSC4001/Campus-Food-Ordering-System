@@ -57,7 +57,8 @@ def register_template_context(app):
     @app.context_processor
     def make_template_context():
         from flask_login import current_user
-        return dict(current_user=current_user)
+        from CFO_System.utils import redirect_back
+        return dict(current_user=current_user, redirect_back=redirect_back)
 
 def register_errors(app):
     @app.errorhandler(400)

@@ -1,0 +1,45 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block content %}
+
+    <h5>详情</h5>
+
+
+    <div class="Text">
+        <p>Shop ID: {{ message.shop_id }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop owner ID: {{ message.user_id }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Name: {{ message.shop_name }}</p>
+    </div>
+    <div class="Text">
+        <p>License: {{ message.shop_license_number }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Contact: {{ message.shop_contact }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Info: {{ message.shop_info }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Location: {{ message.shop_location }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Location Detail: {{ message.shop_location_detail }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Status: {{ message.shop_status }}</p>
+    </div>
+
+
+    <div class="btn">
+        {{ render_form(block_form, action=request.full_path) }}
+    </div>
+
+
+
+{% endblock %}

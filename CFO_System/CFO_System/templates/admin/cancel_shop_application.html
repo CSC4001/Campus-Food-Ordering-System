@@ -1,0 +1,40 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block content %}
+
+    <h5>闭店申请列表
+        <small class="text-muted">总{{ messages|length }} 个申请</small>
+        <small class="float-right">
+            <a href="#bottom" title="Go Bottom">&darr;</a>
+        </small>
+    </h5>
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Application Id</th>
+            <th>User ID</th>
+            <th>Shop Name</th>
+            <th>Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for message in messages %}
+        <tr>
+          <td>{{ message.application_id }}</td>
+          <td>{{ message.user_id }}</td>
+          <td>{{ message.shop_name }}</td>
+            <td>
+                <a href="{{ url_for('admin.application_detail',application_id=message.application_id) }}">
+                    Detail
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

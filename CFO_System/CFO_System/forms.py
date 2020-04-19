@@ -15,7 +15,7 @@ from CFO_System.models import User
 
 # shop info form is designed according to web page v2.2 p.16
 class ShopInfoForm(FlaskForm):
-    status = [('open','open'), ('closed','closed'), ('blocked','blocked'), ('cancelled','cancelled')]
+    status = [('open','open'), ('closed','closed')]
     location = [('Student Center','Student Center'), ('Shaw College','Shaw College'),
             ('Muse College','Muse College'), ('Deligentia College','Deligentia College'),
             ('Harmonia College','Harmonia College'),('Le Tian Building','Le Tian Building'),
@@ -32,6 +32,23 @@ class ShopInfoForm(FlaskForm):
     shop_status = SelectField('店铺状态',choices=status,validators=[DataRequired()])
 
     submit = SubmitField('确认修改')
+
+class ShopAddingForm(FlaskForm):
+    status = [('open','open'), ('closed','closed'), ('blocked','blocked'), ('cancelled','cancelled')]
+    location = [('Student Center','Student Center'), ('Shaw College','Shaw College'),
+            ('Muse College','Muse College'), ('Deligentia College','Deligentia College'),
+            ('Harmonia College','Harmonia College'),('Le Tian Building','Le Tian Building'),
+            ('Zhi Ren Building','Zhi Ren Building'), ('Zhi Xin Building','Zhi Xin Building'),
+            ('Research A','Research A'), ('Research B','Research B'),('Teaching A','Teaching A'),
+            ('Teaching B','Teaching B'), ('Teaching C','Teaching C'), ('Teaching D','Teaching D')]
+    shop_name = StringField('店铺名', validators=[DataRequired(), Length(1, 32)])
+    shop_contact = StringField('电话', validators=[DataRequired(), Length(11,11)])
+    shop_location = SelectField('地点', choices=location,validators=[DataRequired()])
+    shop_location_detail = TextAreaField('详细地址', validators=[DataRequired(), Length(1, 256)])
+    shop_license_number = StringField('证件号', validators=[DataRequired(), Length(32)])
+    shop_info = TextAreaField('详细信息', validators=[DataRequired(), Length(1, 256)])
+
+    submit = SubmitField('确认提交申请')
 
 # product info form
 class ProductInfoForm(FlaskForm):
@@ -95,3 +112,12 @@ class WithdrawForm(FlaskForm):
     withdraw_amount = FloatField('Withdraw Amount', validators=[DataRequired(), NumberRange(min=0, max=1000)])
     bank_card_withdraw = StringField('Bank Card Number', validators=[DataRequired(), Length(16, 19)])
     submit_withdraw = SubmitField(label='Withdraw')
+
+class BlockButtonForm(FlaskForm):
+    submit_one = SubmitField(label="block this shop")
+
+class ApproveButtonForm(FlaskForm):
+    submit_approve = SubmitField(label="Approve")
+
+class RejectButtonForm(FlaskForm):
+    submit_reject = SubmitField(label="Reject")

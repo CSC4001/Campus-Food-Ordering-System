@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block content %}
+<h2>Application of creating your own shop</h2>
+
+    <p/>
+    <a class='btn btn-lg btn-success' href="{{ url_for('shop.index') }}">返回</a>
+
+    <div class="hello-form">
+        {{ render_form(form, action=request.full_path) }}
+    </div>
+
+{% endblock %}

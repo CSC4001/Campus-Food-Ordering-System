@@ -10,6 +10,7 @@ from flask_login import  login_required, current_user
 from CFO_System.models import *
 from CFO_System.forms import *
 from CFO_System.utils import *
+from CFO_System.utils import redirect_back
 
 # from CFO_System import app, db
 # from CFO_System.forms import ShopInfoForm, ProductInfoForm, DeleteForm
@@ -26,8 +27,7 @@ def login_protect():
 '''
 index route "/" : display the shop in the database
 '''
-# TODO: Display according to shop owners
-# TODO: Add application of adding new shops
+# TODO: Add application of adding new shops, apply to shutdown, apply to unban
 @shop_bp.route('/', methods=['GET', 'POST'])
 def index():
     messages = Shop.query.filter_by(user_id=current_user.user_id).order_by(Shop.shop_name.desc()).all()
@@ -178,10 +178,12 @@ def delete_dish(shop_id,product_id):
         return redirect(url_for('shop.dishes',shop_id=shop_id))
 
 '''
-@shop_bp.route('/add/<int:shop_id>', methods=['GET', 'POST'])
-def edit_note(shop_id):
-    form = ShopInfoForm()
-    shop = Shop.query.get(shop_id)
+route for applying a new shop
+'''
+@shop_bp.route('/apply_new_shop', methods=['GET', 'POST'])
+def apply_new_shop():
+    # if shop is closed, cannot enter this page
+    form = ShopAddingForm()
     if form.validate_on_submit():
         shop_name = form.shop_name.data
         shop_contact = form.shop_contact.data
@@ -189,15 +191,74 @@ def edit_note(shop_id):
         shop_location_detail = form.shop_location_detail.data
         shop_license_number = form.shop_license_number.data
         shop_info = form.shop_info.data
-        message = Shop( shop_name = shop_name,
-                        shop_contact = shop_contact,
-                        shop_location = shop_location,
-                        shop_location_detail = shop_location_detail,
-                        shop_license_number = shop_license_number,
-                        shop_info = shop_info)
-        db.session.add(message)
+        application = Application(
+            user_id=current_user.user_id,
+            application_type="open",
+            shop_name = shop_name,
+            shop_contact = shop_contact,
+            shop_license_number = shop_license_number,
+            shop_location = shop_location,
+            shop_location_detail = shop_location_detail,
+            shop_info=shop_info,
+            application_status="pending"
+        )
+        db.session.add(application)
         db.session.commit()
-        flash('Successful update to shop  info!')
-        return redirect(url_for('index'))
-    return render_template('edit_note.html', form=form)
+        flash('Successfully submitted the open shop application!')
+        return redirect(url_for('shop.index'))
+
+    return render_template('shop/apply_new_shop.html', form=form)
+
 '''
+route for applying cancelling, namely shutting down the shop permanently
+'''
+@shop_bp.route('/shop_<int:shop_id>/apply_cancel', methods=['GET', 'POST'])
+def apply_cancel(shop_id):
+    # check if have access to the shop
+    if not is_my_shop(shop_id):
+        return redirect_back()
+    else:
+        shop = Shop.query.filter_by(shop_id=shop_id).first()
+        if shop.shop_status == 'cancelled' or shop.shop_status == 'blocked':
+            flash("Cannot do this operation.")
+            return redirect_back()
+        application = Application(
+            user_id=current_user.user_id,
+            shop_id=shop.shop_id,
+            application_type="cancel",
+            shop_name = shop.shop_name,
+            shop_license_number = shop.shop_license_number,
+            application_status="pending"
+        )
+        db.session.add(application)
+        db.session.commit()
+        flash('Successfully submitted the cancelling shop application!')
+        return redirect(url_for('shop.index'))
+
+'''
+route for applying unblock the shop
+'''
+@shop_bp.route('/shop_<int:shop_id>/apply_unblock', methods=['GET', 'POST'])
+def apply_unblock(shop_id):
+    # check if have access to the shop
+    if not is_my_shop(shop_id):
+        return redirect_back()
+    else:
+        shop = Shop.query.filter_by(shop_id=shop_id).first()
+        if shop.shop_status != "blocked":
+            flash("Cannot do this operation.")
+            return redirect_back()
+        application = Application(
+            user_id=current_user.user_id,
+            shop_id=shop.shop_id,
+            application_type="unblock",
+            shop_name = shop.shop_name,
+            shop_license_number = shop.shop_license_number,
+            application_status="pending"
+        )
+        db.session.add(application)
+        db.session.commit()
+        flash('Successfully submitted the unblock shop application!')
+        return redirect(url_for('shop.index'))
+
+

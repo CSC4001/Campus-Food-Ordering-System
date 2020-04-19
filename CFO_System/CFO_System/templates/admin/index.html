@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block navigator %}
+    <ul class="nav nav-tabs nav-justified">
+        <li class="active"><a href="#">Index&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </a></li>
+        <li>
+            <a href="{{ url_for('admin.user_management')}}" title="User management">User management&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('admin.shop_management')}}" title="Shop management">Shops management&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </a>
+        </li>
+        <li>
+            <a href="#" title="Order management">Order management&nbsp;&nbsp;&nbsp;
+            </a>
+        </li>
+
+    </ul>
+
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('admin.open_shop_application') }}">开店申请</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('admin.cancel_shop_application') }}">闭店申请</a>
+    </li>
+      <li class="nav-item">
+      <a class="nav-link" href="{{ url_for('admin.unblock_shop_application') }}">解禁店铺申请</a>
+    </li>
+  </ul>
+{% endblock %}
+
+{% block footer %}
+    <small> &copy; 2020 <a href="https://github.com/CSC4001/Campus-Food-Ordering-System" title="CSC4001 Project">Campus Food Ordering System</a> /
+    </small>
+    <p><a id="bottom" href="#" title="Go Top">&uarr;</a></p>
+    <p class="float-right">
+        <small>
+            {% if current_user.is_authenticated %}
+                <p>Hello, admin!</p>
+                <a href="{{ url_for('auth.logout', next=request.full_path) }}">Logout</a>
+            {% else %}
+                <a  href="{{ url_for('auth.login', next=request.full_path) }}">Login</a>&nbsp;&nbsp;
+                <a  href="{{ url_for('auth.register') }}">Register</a>
+            {% endif %}
+        </small>
+    </p>
+{% endblock %}

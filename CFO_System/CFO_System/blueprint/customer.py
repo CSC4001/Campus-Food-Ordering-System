@@ -12,6 +12,9 @@ index route "/" : display the index of the website
 def index():
     return render_template('customer/index.html')
 
+'''
+personal center route "/personal_center": display & modify personal informations
+'''
 @customer_bp.route('/personal_center', methods=['GET', 'POST'])
 @login_required
 def personal_center():

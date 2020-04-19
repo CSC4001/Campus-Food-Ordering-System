@@ -1,0 +1,34 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block content %}
+
+    <h5>用户管理
+        <small class="text-muted">总{{ messages|length }} 个用户</small>
+        <small class="float-right">
+            <a href="#bottom" title="Go Bottom">&darr;</a>
+        </small>
+    </h5>
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>User Id</th>
+            <th>User Name</th>
+            <th>User status</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for message in messages %}
+        <tr>
+          <td>{{ message.user_id }}</td>
+          <td>{{ message.user_name }}</td>
+          <td>{{ message.user_status }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}

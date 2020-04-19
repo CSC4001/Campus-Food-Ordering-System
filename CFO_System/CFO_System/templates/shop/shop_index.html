@@ -25,4 +25,14 @@
         简介：<br />{{ message.shop_info }}
     </p>
 
+    <div>
+        <p>
+        </p>
+    </div>
+    <a class='btn btn-lg btn-success' href="{{ url_for('shop.apply_cancel',shop_id=message.shop_id) }}">Shutdown this shop</a>
+    <a class='btn btn-lg btn-success' href="{{ url_for('shop.apply_unblock',shop_id=message.shop_id) }}">Apply to unblock</a>
+
+    <p>
+     Warning: shutdown this shop will shutdown your shop permanently!
+    </p>
 {% endblock %}

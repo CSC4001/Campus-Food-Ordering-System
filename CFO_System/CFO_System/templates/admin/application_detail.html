@@ -1,0 +1,56 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block content %}
+
+    <h5>详情</h5>
+
+    <div class="Text">
+        <p>Application ID: {{ message.application_id }}</p>
+    </div>
+    <div class="Text">
+        <p>User ID: {{ message.user_id }}</p>
+    </div>
+    <div class="Text">
+        <p>Application type: {{ message.application_type }}</p>
+    </div>
+
+{% if message.application_type=="open" %}
+    <div class="Text">
+        <p>Shop Name: {{ message.shop_name }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Contact: {{ message.shop_contact }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Info: {{ message.shop_info }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Location: {{ message.shop_location }}</p>
+    </div>
+    <div class="Text">
+        <p>Shop Location Detail: {{ message.shop_location_detail }}</p>
+    </div>
+    <div class="Text">
+        <p>License: {{ message.shop_license_number }}</p>
+    </div>
+{% elif message.application_type=="cancel" or message.application_type=="unblock" %}
+    <div class="Text">
+        <p>Shop Name: {{ message.shop_name }}</p>
+    </div>
+    <div class="Text">
+        <p>License: {{ message.shop_license_number }}</p>
+    </div>
+
+{% endif %}
+
+    <div class="btn">
+        {{ render_form(approve_form, action=request.full_path) }}
+    </div>
+    <div class="btn">
+        {{ render_form(reject_form, action=request.full_path) }}
+    </div>
+
+
+{% endblock %}

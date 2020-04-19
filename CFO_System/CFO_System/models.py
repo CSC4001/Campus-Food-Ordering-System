@@ -159,15 +159,16 @@ class Application(db.Model):
     __tablename__ = 'applications'
     application_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True, index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False, index=True)
-    application_type = db.Column(db.Enum('open', 'cancel'), nullable=False)
-    shop_name = db.Column(db.String(32), nullable=False)
-    shop_info = db.Column(db.String(256), nullable=False, default='')
-    shop_contact = db.Column(db.String(32), nullable=False)
+    application_type = db.Column(db.Enum('open', 'cancel','unblock'), nullable=False)
+    shop_id = db.Column(db.Integer)
+    shop_name = db.Column(db.String(32))
+    shop_info = db.Column(db.String(256),  default='')
+    shop_contact = db.Column(db.String(32))
     shop_location = db.Column(db.Enum(
         'Student Center', 'Shaw College', 'Muse College', 'Deligentia College', 'Harmonia College',
         'Le Tian Building', 'Zhi Ren Building', 'Zhi Xin Building', 'Research A', 'Research B',
-        'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D'), nullable=False)
-    shop_location_detail = db.Column(db.String(256), nullable=False, default='')
+        'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D'))
+    shop_location_detail = db.Column(db.String(256), default='')
     shop_license_number = db.Column(db.String(32), nullable=False)
     application_status = db.Column(db.Enum('pending', 'approved', 'denied'), nullable=False)
 

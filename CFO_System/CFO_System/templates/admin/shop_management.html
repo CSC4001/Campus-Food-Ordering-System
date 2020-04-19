@@ -1,0 +1,40 @@
+{% extends 'admin/index.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+
+{% block content %}
+
+    <h5>店铺列表
+        <small class="text-muted">总{{ messages|length }} 个店铺</small>
+        <small class="float-right">
+            <a href="#bottom" title="Go Bottom">&darr;</a>
+        </small>
+    </h5>
+
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Shop Id</th>
+            <th>Shop Name</th>
+            <th>Shop status</th>
+            <th>Detail</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for message in messages %}
+        <tr>
+          <td>{{ message.shop_id }}</td>
+          <td>{{ message.shop_name }}</td>
+          <td>{{ message.shop_status }}</td>
+            <td>
+                <a href="{{ url_for('admin.shop_detail',shop_id=message.shop_id)}}">
+                    Detail
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+{% endblock %}
