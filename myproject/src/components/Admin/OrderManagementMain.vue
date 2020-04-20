@@ -1,32 +1,60 @@
 <template>
 <div>
-    <el-row type=flex justify="center">
-        <el-col :span="8">
-            <a-input-search placeholder="input search text" @search="onSearch" enterButton />
-    <br /><br />
-        </el-col>
-    </el-row>
-<el-row type=flex justify="center">
-    <el-col :span="16">
-   <a-table
-    :columns="columns"
-    :rowKey="record => record.login.uuid"
-    :dataSource="data"
-    :pagination="pagination"
-    :loading="loading"
-    
-    @change="handleTableChange"
-    size="small"
-  >
-    <span slot="name" slot-scope="name">{{name.last}}</span>
-    <span slot="location" slot-scope="location">{{location.city}}</span>
-    <span slot="action">
-        <el-button type="text">Details</el-button>
-    </span>
-    <span slot="shop_id" slot-scope="location">{{location.postcode}}</span>
-  </a-table>
+  <el-row type=flex justify="center">
+    <el-col :span="8">
+      <a-input-search placeholder="input search text" @search="onSearch" enterButton />
+      <br /><br />
     </el-col>
-</el-row>
+  </el-row>
+  <el-row type=flex justify="center">
+    <el-col :span="16">
+      <a-table
+        :columns="columns"
+        :rowKey="record => record.login.uuid"
+        :dataSource="data"
+        :pagination="pagination"
+        :loading="loading"
+        
+        @change="handleTableChange"
+        size="small"
+      >
+        <span slot="name" slot-scope="name">{{name.last}}</span>
+        <span slot="location" slot-scope="location">{{location.city}}</span>
+        <span slot="action">
+          <el-button type="text" @click="detailsVisible = true">Details</el-button>
+          <el-dialog
+            :visible.sync="detailsVisible"
+            width="30%"
+            center>
+            <span>Order ID:</span><span> id </span>
+            <br>
+            <span>User ID:</span><span> user id </span>
+            <br>
+            <span>Shop ID:</span><span> shop id </span>
+            <br>
+            <span>Dishes List:</span><span> a dishes </span>
+            <br>
+            <span>User Name:</span><span> a name </span>
+            <br>
+            <span>Address:</span><span> an address </span>
+            <br>
+            <span>Fee:</span><span> 1$ </span>
+            <br>
+            <span>Total Price</span><span> 10$ </span>
+            <br>
+            <span>Order Status:</span><span> finished </span>
+            <br>
+            <span>Time Created:</span><span> a day </span>
+            <br>
+            <span slot="footer" class="dialog-footer">
+              <el-button type="primary" @click="detailsVisible = false">Confirm</el-button>
+            </span>
+          </el-dialog>
+        </span>
+        <span slot="shop_id" slot-scope="location">{{location.postcode}}</span>
+      </a-table>
+    </el-col>
+  </el-row>
 </div>
 </template>
 <script>
@@ -72,6 +100,7 @@ import reqwest from 'reqwest';
         pagination: {},
         loading: false,
         columns,
+        detailsVisible: false,
       };
     },
     methods: {

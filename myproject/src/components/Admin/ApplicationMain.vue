@@ -11,7 +11,26 @@
     <span slot="name" slot-scope="name">{{name.last}}</span>
     <span slot="location" slot-scope="location">{{location.city}}</span>
     <span slot="action">
-        <el-button type="text">Details</el-button>
+        <el-button type="text" @click="detailsVisible = true">Details</el-button>
+        <el-dialog
+          :visible.sync="detailsVisible"
+          width="30%"
+          center>
+          <span>ID:</span><span> id </span>
+          <br>
+          <span>Shop:</span><span> a shop </span>
+          <br>
+          <span>Location:</span><span> Letian </span>
+          <br>
+          <span>Relevant Information</span>
+          <div>
+            some info
+          </div>
+          <span slot="footer" class="dialog-footer">
+            <el-button size="medium" type="text" @click="handleReject">Reject</el-button>
+            <el-button size="medium" type="primary" @click="handlePass">Pass</el-button>
+          </span>
+        </el-dialog>
     </span>
     <span slot="shop_id" slot-scope="location">{{location.postcode}}</span>
   </a-table>
@@ -69,6 +88,8 @@ import reqwest from 'reqwest';
     },
     data() {
       return {
+        detailsVisible: false,
+        popVisible: false,
         data: [],
         pagination: {},
         loading: false,
@@ -76,6 +97,16 @@ import reqwest from 'reqwest';
       };
     },
     methods: {
+      cancel(e) {
+        console.log(e);
+        this.$message.error('Click on No');
+      },
+      handleReject(){
+        this.detailsVisible = false;
+      },
+      handlePass(){
+        this.detailsVisible = false;
+      },
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
         const pager = { ...this.pagination };

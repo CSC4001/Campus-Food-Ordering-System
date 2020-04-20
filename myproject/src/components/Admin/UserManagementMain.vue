@@ -21,7 +21,19 @@
     <span slot="name" slot-scope="name">{{name.last}}</span>
     <span slot="location" slot-scope="location">{{location.city}}</span>
     <span slot="action">
-        <el-button type="text">Details</el-button>
+        <el-button type="text" @click="detailsVisible = true">Details</el-button>
+        <el-dialog
+          :visible.sync="detailsVisible"
+          width="30%"
+          center>
+          <span>ID:</span><span> id </span>
+          <br>
+          <span>Name:</span><span> a user </span>
+          <br>
+          <span slot="footer" class="dialog-footer">
+            <el-button type="primary" @click="detailsVisible = false">Confirm</el-button>
+          </span>
+        </el-dialog>
     </span>
     <span slot="shop_id" slot-scope="location">{{location.postcode}}</span>
   </a-table>
@@ -72,6 +84,7 @@ import reqwest from 'reqwest';
         pagination: {},
         loading: false,
         columns,
+        detailsVisible: false,
       };
     },
     methods: {
