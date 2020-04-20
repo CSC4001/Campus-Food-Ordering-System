@@ -1,6 +1,6 @@
 <template>
-  <div>
-  <el-container direction='vertical'>
+  <div style="height:100%;">
+    <el-container direction='vertical'>
       <el-header style="margin:1px;">
         <Header/> <!-- Fixed Header-->
       </el-header>
@@ -17,22 +17,26 @@
 </template>
 
 <script>
-  import Header from '@/components/Shop/Header'
-  import Sidebar from '@/components/Shop/Sidebar'
-  import OrderManagementMain from '@/components/Shop/OrderManagementMain'
+  import Header from '@/components/Admin/Header'
+  import Sidebar from '@/components/Admin/Sidebar'
+  import OrderManagementMain from '@/components/Admin/OrderManagementMain'
 
   export default {
     name: 'OrderManagement',
+
     data() {
       return {
 
       };
+    },
+    methods: {
+
     },
     components: {
       Header,
       Sidebar,
       OrderManagementMain,
     },
+
   };
 </script>
-
