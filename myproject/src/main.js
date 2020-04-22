@@ -16,6 +16,8 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Avue from '@smallwei/avue';
 import '@smallwei/avue/lib/index.css';
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
 
 Vue.config.productionTip = false;
@@ -23,6 +25,7 @@ Vue.config.productionTip = false;
 Vue.use(Antd);
 Vue.use(ElementUI);
 Vue.use(Avue)
+Vue.use(VueAxios, axios)
 
 /* eslint-disable no-new */
 new Vue({

@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, Blueprint
+from flask import render_template, flash, redirect, url_for, Blueprint, request, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
 
 from CFO_System.models import Administrator
@@ -60,6 +60,4 @@ def logout():
     logout_user()
     flash('Logout success.', 'info')
     return redirect(url_for('customer.index'))
-
-
 

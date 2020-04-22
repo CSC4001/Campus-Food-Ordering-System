@@ -12,22 +12,30 @@ import click
 import base64,random
 
 from flask import Flask, render_template
-
+from flask_cors import CORS
 
 from CFO_System.settings import config
 from CFO_System.blueprint.shop import shop_bp
 from CFO_System.blueprint.auth import auth_bp
 from CFO_System.blueprint.customer import customer_bp
 from CFO_System.blueprint.admin import admin_bp
+from CFO_System.blueprint.api import api_bp
 from CFO_System.extensions import bootstrap, db, moment, login_manager
 from CFO_System.models import *
+
+# for CORS requests from frontend
+def after_request(response):
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'PUT,GET,POST,DELETE'
+    response.headers['Access-Control-Allow-Headers'] = 'Content-Type,Authorization'
+    return response
 
 def create_app(config_name=None):
     if config_name is None:
         config_name = os.getenv('FLASK_CONFIG','development')
     app = Flask('CFO_System')
     app.config.from_object(config[config_name])
-
+    app.after_request(after_request)
     register_logging(app)
     register_extensions(app)
     register_blueprints(app)
@@ -52,6 +60,7 @@ def register_blueprints(app):
     app.register_blueprint(auth_bp)
     app.register_blueprint(customer_bp)
     app.register_blueprint(admin_bp, url_prefix='/admin')
+    app.register_blueprint(api_bp, url_prefix='/api')
 
 def register_template_context(app):
     @app.context_processor

@@ -61,8 +61,6 @@
             </a-list-item-meta>
           </a-list-item>
         </a-list>
-        <el-button>close shop</el-button>
-        <el-button>open shop</el-button>
       </el-col>
     </el-row>
 

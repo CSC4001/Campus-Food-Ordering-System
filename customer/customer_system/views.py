@@ -40,6 +40,9 @@ def login():
         if len(result) > 1:
             abort(500)
         if result:
+            if result[0].user_status == 'blocked':
+                flash('The account is blocked!')
+                return redirect(url_for('index'))
             session['user_id'] = result[0].user_id
             flash('You have successfully signed in!')
             return redirect(url_for('index'))

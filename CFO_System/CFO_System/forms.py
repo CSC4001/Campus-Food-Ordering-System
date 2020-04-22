@@ -63,7 +63,7 @@ class DeleteForm(FlaskForm):
 
 # login form
 class LoginForm(FlaskForm):
-    email = StringField('Email', validators=[DataRequired(), Length(1, 20)])
+    email = StringField('Email', validators=[DataRequired(), Length(1, 254)])
     password = PasswordField('Password', validators=[DataRequired(), Length(1, 128)])
     submit = SubmitField('Log in')
 

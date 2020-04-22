@@ -1,0 +1,23 @@
+Metadata-Version: 2.1
+Name: Bootstrap-Flask
+Version: 1.2.0
+Summary: Bootstrap helper for Flask/Jinja2.
+Home-page: https://github.com/greyli/bootstrap-flask
+Author: Grey Li
+Author-email: withlihui@gmail.com
+License: MIT
+Requires-Dist: Flask
+Provides-Extra: dev
+Requires-Dist: coverage ; extra == 'dev'
+Requires-Dist: tox ; extra == 'dev'
+Requires-Dist: sphinx ; extra == 'dev'
+Requires-Dist: pallets-sphinx-themes ; extra == 'dev'
+Requires-Dist: sphinxcontrib-log-cabinet ; extra == 'dev'
+Provides-Extra: docs
+Requires-Dist: sphinx ; extra == 'docs'
+Requires-Dist: pallets-sphinx-themes ; extra == 'docs'
+Requires-Dist: sphinxcontrib-log-cabinet ; extra == 'docs'
+
+# Bootstrap-Flask
+
+

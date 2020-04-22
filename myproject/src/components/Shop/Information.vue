@@ -2,11 +2,11 @@
   <div>
   <el-container direction='vertical'>
       <el-header style="margin:1px;">
-        <ShopHeader/> <!-- Fixed Header-->
+        <Header/> <!-- Fixed Header-->
       </el-header>
       <el-container>
         <el-aside width="15%">
-          <ShopSidebar/> <!-- Fixed Sidebar-->
+          <Sidebar/> <!-- Fixed Sidebar-->
         </el-aside>
         <el-main>
           <InformationMain/> <!-- Alterable Main Content-->
@@ -18,8 +18,8 @@
 
 
 <script>
-  import ShopHeader from '@/components/Shop/Header'
-  import ShopSidebar from '@/components/Shop/Sidebar'
+  import Header from '@/components/Shop/Header'
+  import Sidebar from '@/components/Shop/Sidebar'
   import InformationMain from '@/components/Shop/InformationMain'
 
   export default {
@@ -34,8 +34,8 @@
 
     },
     components: {
-      ShopHeader,
-      ShopSidebar,
+      Header,
+      Sidebar,
       InformationMain,
     },
   };
