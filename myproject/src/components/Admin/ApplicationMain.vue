@@ -26,9 +26,31 @@
           <div>
             some info
           </div>
+          <!-- reject confirm -->
+          <el-dialog
+            width="30%"
+            :visible.sync="rejectDialogVisible"
+            append-to-body>
+            Are you sure to reject?
+            <span slot="footer" class="dialog-footer">
+              <el-button size="medium" type="text" @click="rejectDialogVisible = false">No</el-button>
+              <el-button size="medium" type="primary" @click="handleReject">Yes</el-button>
+            </span>
+          </el-dialog>
+          <!-- pass confirm -->
+          <el-dialog
+            width="30%"
+            :visible.sync="passDialogVisible"
+            append-to-body>
+            Are you sure to pass?
+            <span slot="footer" class="dialog-footer">
+              <el-button size="medium" type="text" @click="passDialogVisible = false">No</el-button>
+              <el-button size="medium" type="primary" @click="handlePass">Yes</el-button>
+            </span>
+          </el-dialog>
           <span slot="footer" class="dialog-footer">
-            <el-button size="medium" type="text" @click="handleReject">Reject</el-button>
-            <el-button size="medium" type="primary" @click="handlePass">Pass</el-button>
+            <el-button size="medium" type="text" @click="rejectDialogVisible = true">Reject</el-button>
+            <el-button size="medium" type="primary" @click="passDialogVisible = true">Pass</el-button>
           </span>
         </el-dialog>
     </span>
@@ -89,7 +111,8 @@ import reqwest from 'reqwest';
     data() {
       return {
         detailsVisible: false,
-        popVisible: false,
+        rejectDialogVisible: false,
+        passDialogVisible: false,
         data: [],
         pagination: {},
         loading: false,
@@ -103,9 +126,11 @@ import reqwest from 'reqwest';
       },
       handleReject(){
         this.detailsVisible = false;
+        this.rejectDialogVisible = false;
       },
       handlePass(){
         this.detailsVisible = false;
+        this.passDialogVisible = false;
       },
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);

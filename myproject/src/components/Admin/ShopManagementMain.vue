@@ -33,9 +33,9 @@
           <span>Status:</span><span> {{shop_status}} </span>
           <br>
           <span>
-            <el-button type="text" @click="closeShop">Closed</el-button>
+            <el-button type="text" @click="blockShop">Block</el-button>
             <span>/</span>
-            <el-button type="text" @click="openShop">Reopen</el-button>
+            <el-button type="text" @click="unblockShop">Unblock</el-button>
           </span>
           <br>
           <span>Location:</span><span> Letian </span>
@@ -95,18 +95,18 @@ import reqwest from 'reqwest';
         loading: false,
         columns,
         detailsVisible: false,
-        shop_status: 'Open',
+        shop_status: 'Unblocked',
       };
     },
     methods: {
         onSearch(value) {
         console.log(value);
       },
-      closeShop(){
-        this.shop_status = 'Closed';
+      blockShop(){
+        this.shop_status = 'Blocked';
       },
-      openShop(){
-        this.shop_status = 'Open';
+      unblockShop(){
+        this.shop_status = 'Unblocked';
       },
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
