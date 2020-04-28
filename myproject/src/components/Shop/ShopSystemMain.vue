@@ -13,7 +13,7 @@
     </el-row>
     <el-row>
         <el-button>close shop</el-button>
-        <el-button>open shop</el-button>
+        <el-button>Apply to unblock</el-button>
     </el-row>
   </div>
 </template>

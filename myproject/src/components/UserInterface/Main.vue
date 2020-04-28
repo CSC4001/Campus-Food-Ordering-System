@@ -1,9 +1,9 @@
 <template>
     <el-col>
         <!-- upper content -->
-        <el-row>
+      <el-row>
         <!-- recommended shop -->
-        <el-col :span="12">
+        <el-col :span="10">
             <div style="background-color: #ececec; padding: 20px;">
             <a-row :gutter="16">
                 <a-col :span="8">
@@ -50,11 +50,16 @@
             </el-form-item>
             </el-form>
         </el-col>
-        </el-row>
+        <el-col :span="2">
+          <el-button @click="drawer = true" size="mini" type="primary">
+            shopping cart
+          </el-button>
+        </el-col>
+      </el-row>
         <!-- horizontalbar -->
-        <el-divider></el-divider>
+      <el-divider></el-divider>
         <!-- lower content -->
-        <el-row>
+      <el-row>
         <div style="background-color: #ececec; padding: 20px;">
             <a-row :gutter="16">
             <a-col :span="4">
@@ -107,7 +112,16 @@
             </a-col>
             </a-row>
         </div>
-        </el-row>
+      </el-row>
+      <el-row>
+        <!-- shopping cart -->
+        <el-drawer
+          :visible.sync="drawer"
+          :direction="direction">
+          <span>我来啦!</span>
+          <el-button type="primary">purchase</el-button>
+        </el-drawer>
+      </el-row>
     </el-col>
 </template>
 
@@ -122,6 +136,8 @@
           searchtype: '',
           searchkey: '',
         },
+        drawer: false,
+        direction: 'rtl'
       };
     },
     methods: {
