@@ -1,6 +1,6 @@
 <template>
 <el-row type='flex' justify='center'>
-<el-col span=12>
+<el-col :span=12>
     <div style="text-align: center; padding: 10%;">
     <h1>Campus Food Ordering System</h1>
     <h1><small>校园订餐系统</small></h1>
@@ -61,7 +61,11 @@ export default {
                     sessionStorage.setItem('accessToken',data.session)
                     this.$router.push({path:'/'}).catch(err => {err})
                     this.$message.success(data.info);
-                }else{
+                } else if (data.status = 'admin') {
+                    sessionStorage.setItem('accessToken',data.session)
+                    this.$router.push({path:'/admin'}).catch(err => {err})
+                    this.$message.success('welcome back, admin!');
+                } else {
                     this.$message.error(data.info);
                     return false;
                 }

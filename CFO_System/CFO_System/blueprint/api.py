@@ -9,17 +9,30 @@ from CFO_System.extensions import db
 
 api_bp = Blueprint("api",__name__)
 
+# API for auth
+# Login
 @api_bp.route('/login',methods=['POST'])
 def api_login():
     data = request.get_json()
     email = data['email'].lower()
     password = data['password']
+    if email == 'admin':
+        admin = Administrator.query.filter_by(administrator_name=email).first()
+        if email == admin.administrator_name and admin.validate_password(password):
+            return jsonify({'status':'admin','info':'登陆成功','session':-1})
     result = User.query.filter_by(email=email).first()
-    print(result)
     if result is not None and result.validate_password(password):
-        return jsonify({'status':'ok','info':'登录成功','session':result.user_id})
-    return jsonify({'status':'no','info':'登录失败'})
+        return jsonify({
+            'status':'ok',
+            'info':'登录成功',
+            'session':result.user_id
+            })
+    return jsonify({
+        'status':'no',
+        'info':'登录失败'
+        })
 
+# Register
 @api_bp.route('/register', methods=['GET', 'POST'])
 def api_register():
     data = request.get_json()
@@ -35,6 +48,8 @@ def api_register():
         return jsonify({'status':'ok','info':'注册成功'})
     return jsonify({'status':'no','info':'注册失败'})
 
+# API for user information
+# Pulling user's personal information when page is creating
 @api_bp.route('/personalInfo', methods=['GET'])
 def api_personalInfo():
     data = request.args.get('id')
@@ -49,6 +64,7 @@ def api_personalInfo():
         'status': result.user_status
     })
 
+# Handle deposit of balance
 @api_bp.route('/submitDeposit', methods=['POST'])
 def api_submitDeposit():
     data = request.args.get('id')
@@ -63,6 +79,7 @@ def api_submitDeposit():
     else:
         return jsonify({'status':'no','info':'Insufficient funds!'})
 
+# handle withdraw of balance
 @api_bp.route('/submitWithdraw', methods=['POST'])
 def api_submitWithdraw():
     data = request.args.get('id')
@@ -77,6 +94,7 @@ def api_submitWithdraw():
     else:
         return jsonify({'status':'no','info':'Insufficient funds!'})
 
+# handle modification of personal infomation
 @api_bp.route('/submitProsonalInfo', methods=['POST'])
 def api_submitProsonalInfo():
     data = request.get_json()

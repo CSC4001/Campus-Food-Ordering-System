@@ -1,6 +1,6 @@
 <template>
 <el-row type='flex' justify='center'>
-<el-col span=12>
+<el-col :span=12>
     <div style="text-align: center; padding: 10%;">
     <h1>Campus Food Ordering System</h1>
     <h1><small>校园订餐系统</small></h1>
@@ -73,8 +73,7 @@ export default {
                 callback(new Error('请输入密码'));
             } else if (value.length <= 8 || value.length >= 128){
                 callback(new Error('密码长度在8-128之间'));
-            } else
-                {
+            } else {
                 if (this.registerForm.password2 !== '') {
                     this.$refs.registerForm.validateField('password2');
                 }
