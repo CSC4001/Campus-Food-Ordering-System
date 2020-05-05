@@ -6,8 +6,8 @@ import Register from '@/components/UserInterface/Register'
 //user 
 import Home from '@/components/UserInterface/Home' 
 import PersonalInfo from '@/components/UserInterface/PersonalInfo'
+import MyShop from '@/components/UserInterface/MyShop'
 //shop
-import MyShop from '@/components/MyShop'
 import ShopSystem from '@/components/Shop/ShopSystem'
 import DishesManagement from '@/components/Shop/DishesManagement'
 import ShopOrderManagement from '@/components/Shop/OrderManagement'
@@ -52,7 +52,7 @@ export default new Router({
             component: MyShop
         },
         {
-            path: '/shopsystem',
+            path: '/shopsystem/:shop_id',
             name: 'ShopSystem',
             component: ShopSystem
         },

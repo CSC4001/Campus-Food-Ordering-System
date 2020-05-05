@@ -1,5 +1,5 @@
 <template>
-<div>
+<div style="overflow:hidden;">
 <el-row class="tac" style="height:100%;">
     <el-col style="height:100%;">
         <el-menu

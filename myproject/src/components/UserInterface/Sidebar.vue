@@ -35,7 +35,7 @@
             </el-menu-item>
         </router-link>
 
-        <router-link to="/personalinfo">
+        <router-link to="/myshop">
             <el-menu-item index="5">
                 <i class="el-icon-menu"></i>
                 <span slot="title">My Shop</span>

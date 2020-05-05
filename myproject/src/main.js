@@ -38,7 +38,9 @@ router.beforeEach((to,from,next) => {
     if(to.path === "/login" || to.path === "/register"){
         next()
     } else {
-        if (sessionStorage.getItem('accessToken')){
+        if (sessionStorage.getItem('accessToken') == 'admin'){
+            next('/admin')
+        } else if (sessionStorage.getItem('accessToken')){
             next()
         } else {
             next("/login")

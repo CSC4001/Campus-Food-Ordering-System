@@ -6,7 +6,7 @@
         <el-menu-item index="3">Shaw College</el-menu-item>
         <el-menu-item index="4">Student Centre</el-menu-item>
         <el-menu-item index="5">LeTian Building</el-menu-item>
-        <el-button @click="logout">Log out</el-button>
+        <el-button @click="logout" style="margin-top:10px">Log out</el-button>
     </el-menu>
 </div>
 </template>

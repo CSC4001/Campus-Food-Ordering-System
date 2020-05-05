@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, Blueprint, request, jsonify
+from flask import render_template, flash, redirect, url_for, Blueprint, request, jsonify, Response
 from flask_login import login_user, logout_user, login_required, current_user
 
 from CFO_System.models import *
@@ -6,6 +6,7 @@ from CFO_System.forms import *
 from CFO_System.utils import redirect_back
 from CFO_System.models import User
 from CFO_System.extensions import db
+import json
 
 api_bp = Blueprint("api",__name__)
 
@@ -113,5 +114,20 @@ def api_submitProsonalInfo():
     except:
         return jsonify({'status':'no','info':'Modify error!'})
 
-
-
+# provide myShop page's shop list
+@api_bp.route('/getMyShop', methods=['GET'])
+def api_getMyShop():
+    data = request.args.get('id')
+    messages = Shop.query.filter_by(user_id=data).order_by(Shop.shop_name.desc()).all()
+    if len(messages) == 0:
+        return jsonify({})
+    else:
+        result = list()
+        for shop in messages:
+            a = dict()
+            a['shop_id'] = shop.shop_id
+            a['shop_name'] = shop.shop_name
+            a['shop_info'] = shop.shop_info
+            a['shop_status'] = shop.shop_status
+            result.append(a)
+        return Response(json.dumps(result),  mimetype='application/json')

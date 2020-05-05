@@ -1,11 +1,11 @@
 <template>
-<div style="height:100%;">
+<div style="height:100%; overflow:hidden;">
     <el-menu :default-active="activeIndex" mode="horizontal" justify="start" align="middle" @select="handleSelect">
         <el-menu-item index="1"><el-link href="http://localhost:8080/#/shopsystem" v-on:click="test">Front Page</el-link></el-menu-item>
         <el-menu-item index="2"><el-link href="http://localhost:8080/#/shop/dishesmanagement">Dishes Management</el-link></el-menu-item>
         <el-menu-item index="3"><el-link href="http://localhost:8080/#/shop/ordermanagement">Order Management</el-link></el-menu-item>
         <el-menu-item index="4"><el-link href="http://localhost:8080/#/shop/information">Infomation</el-link></el-menu-item>
-        <el-button @click="logout">Log out</el-button>
+        <el-button @click="logout" style="margin-top:10px">Log out</el-button>
     </el-menu>
 </div>
 </template>
