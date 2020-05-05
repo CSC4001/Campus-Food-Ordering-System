@@ -131,3 +131,25 @@ def api_getMyShop():
             a['shop_status'] = shop.shop_status
             result.append(a)
         return Response(json.dumps(result),  mimetype='application/json')
+
+# submit shop apply form
+@api_bp.route('/submitShopApply', methods=['POST'])
+def api_submitShopApply():
+    data = request.get_json()
+    application = Application(
+        user_id = data['id'],
+        application_type="open",
+        shop_name = data['name'],
+        shop_contact = data['contact'],
+        shop_license_number = data['licenseNum'],
+        shop_location = data['location'],
+        shop_location_detail = data['locationDetail'],
+        shop_info=data['info'],
+        application_status="pending"
+    )
+    db.session.add(application)
+    db.session.commit()
+    return jsonify({
+        'status': 'ok',
+        'info': 'Submit success!'
+    })

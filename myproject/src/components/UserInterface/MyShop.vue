@@ -68,7 +68,7 @@
                 </el-form-item>
               </el-form>
               <el-button @click="applyFormVisible = false">Cancel</el-button>
-              <el-button type="primary" @click="submitApplyFrom(applyModel)">Submit</el-button>
+              <el-button type="primary" @click="submitApplyForm('applyModel')">Submit</el-button>
             </el-dialog>
           </el-col>
         </el-main>
@@ -86,6 +86,30 @@
   export default {
     name: 'MyShop',
     data() {
+      var validateContact = (rule, value, callback) => {
+        const userContact = /^[0-9]/;
+        if (value === '') {
+          callback(new Error('Please input Shop contact'));
+        } else {
+          if (userContact.test(value) && value.length === 11) {
+            callback();
+          } else{
+            callback(new Error('Length should be 11'));
+          }
+        }
+      };
+      var validateLicense = (rule, value, callback) => {
+        const userLicense = /^[0-9]/;
+        if (value === '') {
+          callback(new Error('Please input ID number'));
+        } else {
+          if (userLicense.test(value) && value.length === 32) {
+            callback();
+          } else{
+            callback(new Error('Length should be 32'));
+          }
+        }
+      };
       return {
         shopList: [],
         locationOptions: [
@@ -120,8 +144,7 @@
             { min: 1, max: 32, message: 'Length should be 1 to 32', trigger: 'blur' },
           ],
           contact: [
-            { required: true, message: 'Please input Shop contact', trigger: 'blur' },
-            { len:11 , type: 'number', message: 'Length should be 11', trigger: 'change' },
+            { required: true, validator: validateContact, trigger: 'blur' }
           ],
           location: [
             { required: true, message: 'Please choose location' },
@@ -130,8 +153,7 @@
             { required: true, message: 'Please input Detailed location', trigger: 'blur' },
           ],
           licenseNum: [
-            { required: true, message: 'ID number', trigger: 'blur' },
-            { len: 32 , type: 'number', message: 'Length should be 32', trigger: 'change' },
+            { required: true, validator: validateLicense, trigger: 'blur' }
           ],
           info: [
             { required: true, message: 'Please input Detailed location', trigger: 'blur' },
@@ -153,7 +175,7 @@
       handleShopURL(id) {
         this.$router.push({path:`/shopsystem/${id}`}).catch(err => {err})
       },
-      submitApplyFrom(formName){
+      submitApplyForm(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
             console.log(JSON.stringify(this.applyForm))
