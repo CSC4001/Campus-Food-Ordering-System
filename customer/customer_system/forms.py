@@ -5,6 +5,11 @@ from wtforms import FloatField, StringField, PasswordField, TextAreaField, Submi
 from wtforms.validators import DataRequired, Email, Length, NumberRange
 
 
+class SearchForm(FlaskForm):
+    keyword = StringField('Keyword', validators=[DataRequired()])
+    search = SubmitField(label='Search')
+
+
 class LoginForm(FlaskForm):
     email = StringField('E-mail Address', validators=[DataRequired(), Email(), Length(1, 64)])
     user_password = PasswordField('Password', validators=[DataRequired(), Length(8, 64)])
@@ -46,3 +51,11 @@ class WithdrawForm(FlaskForm):
     withdraw_amount = FloatField('Withdraw Amount', validators=[DataRequired(), NumberRange(min=0, max=1000)])
     bank_card_withdraw = StringField('Bank Card Number', validators=[DataRequired(), Length(16, 19)])
     submit_withdraw = SubmitField(label='Withdraw')
+
+
+class AddBookmarkForm(FlaskForm):
+    submit_add_bookmark = SubmitField(label='Add to Bookmarks')
+
+
+class DeleteBookmarkForm(FlaskForm):
+    submit_delete_bookmark = SubmitField(label='Delete from Bookmarks')

@@ -22,25 +22,22 @@
         <a href="{{ url_for('location', location='Deligentia_College') }}">Deligentia College</a>
         <a href="{{ url_for('location', location='Le_Tian_Building') }}">Le Tian Building</a>
     </div>
-    <div class="search-form">{{ render_form(search_form, action=request.full_path) }}</div>
-    <h5>{{ shops | length }} shop(s) in total</h5>
-    <div class="shop list">
-        {% for shop in shops %}
-            <a class="shop info" href="{{ url_for('view_shop', shop_id=shop.shop_id) }}">
-                <div class="shop header">
-                    <h5 class="shop name">{{ shop.shop_name }}
-                        <small class="shop id">#{{ shop.shop_id }}</small>
-                    </h5>
-                </div>
-                <p class="shop location">Location: {{ shop.shop_location }} {{ shop.shop_location_detail }}</p>
-                {% if shop.shop_rate_number %}
-                    <p class="shop rate">Rating: {{ (shop.shop_rate_total / shop.shop_rate_number) | round(2) }}</p>
-                {% else %}
-                    <p class="shop rate">Rating: No Data</p>
-                {% endif %}
-            </a>
-        {% endfor %}
+    <div class="Text">
+        <p>Shop ID: {{ shop.shop_id }}</p>
+        <p>Shop Name: {{ shop.shop_name }}</p>
+        {% if shop.shop_rate_number %}
+            <p>Rating: {{ (shop.shop_rate_total / shop.shop_rate_number) | round(2) }} ({{ shop.shop_rate_number }} votes)</p>
+        {% else %}
+            <p class="shop rate">Rating: No Data</p>
+        {% endif %}
+        <p>Location: {{ shop.shop_location }} {{ shop.shop_location_detail }}</p>
+        <p>Delivery Fee: {{ shop.shop_delivery_fee }}</p>
+        <p>Contact: {{ shop.shop_contact }}</p>
+        <p>License Number: {{ shop.shop_license_number }}</p>
+        <p>Description: {{ shop.shop_info }}</p>
     </div>
+    <div class="add-bookmark-form">{{ render_form(add_bookmark_form, action=request.full_path) }}</div>
+    <div class="delete-bookmark-form">{{ render_form(delete_bookmark_form, action=request.full_path) }}</div>
     <h5>{{ products | length }} product(s) in total</h5>
     <div class="products">
         {% for product in products %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block content %}
+    <div class="Text">
+        <p>{{ welcome }}</p>
+    </div>
+    <div class="Link">
+        <a href="{{ url_for('login') }}" title="Go to login page">Login</a>
+    </div>
+    <div class="Link">
+        <a href="{{ url_for('register') }}" title="Go to register page">Register</a>
+    </div>
+    <div class="Link">
+        <a href="{{ url_for('personal_center') }}" title="Go to personal center page">Personal Center</a>
+    </div>
+    <div class="logout-form">{{ render_form(logout_form, action=request.full_path) }}</div>
+    <div class="Link">
+        <a href="{{ url_for('index') }}">Index</a>
+        <a href="{{ url_for('location', location='Student_Center') }}">Student Center</a>
+        <a href="{{ url_for('location', location='Shaw_College') }}">Shaw College</a>
+        <a href="{{ url_for('location', location='Deligentia_College') }}">Deligentia College</a>
+        <a href="{{ url_for('location', location='Le_Tian_Building') }}">Le Tian Building</a>
+    </div>
+    <div class="Text">
+        <p>Product Name: {{ product.product_name }}</p>
+        <p>Price: {{ product.product_price }} RMB</p>
+        <p>Total Sale: {{ product.total_sale }}</p>
+        <p>Description: {{ product.product_info }}</p>
+    </div>
+    <div class="Link">
+        <a href="{{ url_for('view_shop', shop_id=product.shop.shop_id) }}" title="Go back to the shop">Back to Shop</a>
+    </div>
+{% endblock %}

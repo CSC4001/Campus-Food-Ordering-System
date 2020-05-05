@@ -2,10 +2,10 @@
 {% from 'bootstrap/form.html' import render_form %}
 
 {% block content %}
+    <div class="Link">
+        <a href="{{ url_for('index') }}" title="Go to index page">Index</a>
+    </div>
     <div class="login-form">
         {{ render_form(login_form, action=request.full_path) }}
-    </div>
-    <div class="Link">
-        <a href="{{ url_for('index')}}" title="Go to index page">Index</a>
     </div>
 {% endblock %}

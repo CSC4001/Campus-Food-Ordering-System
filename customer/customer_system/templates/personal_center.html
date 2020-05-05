@@ -3,13 +3,13 @@
 
 {% block content %}
     <div class="Link">
-        <a href="{{ url_for('index')}}" title="Go to index page">Index</a>
+        <a href="{{ url_for('index') }}" title="Go to index page">Index</a>
     </div>
     <div class="Text">
-        <p>ID: {{ user_id }}</p>
+        <p>ID: {{ user.user_id }}</p>
     </div>
     <div class="Text">
-        <p>E-mail: {{ email }}</p>
+        <p>E-mail: {{ user.email }}</p>
     </div>
     <div class="password-form">
         {{ render_form(password_form, action=request.full_path) }}
@@ -21,15 +21,33 @@
         {{ render_form(contact_form, action=request.full_path) }}
     </div>
     <div class="Text">
-        <p>Available Balance: {{ available_balance }}</p>
+        <p>Available Balance: {{ user.available_balance }}</p>
     </div>
     <div class="Text">
-        <p>Frozen Balance: {{ frozen_balance }}</p>
+        <p>Frozen Balance: {{ user.frozen_balance }}</p>
     </div>
     <div class="deposit-form">
         {{ render_form(deposit_form, action=request.full_path) }}
     </div>
     <div class="withdraw-form">
         {{ render_form(withdraw_form, action=request.full_path) }}
+    </div>
+    <h5>{{ bookmarks | length }} bookmark(s) in total</h5>
+    <div class="shop list">
+        {% for shop in bookmarks %}
+            <a class="shop info" href="{{ url_for('view_shop', shop_id=shop.shop_id) }}">
+                <div class="shop header">
+                    <h5 class="shop name">{{ shop.shop_name }}
+                        <small class="shop id">#{{ shop.shop_id }}</small>
+                    </h5>
+                </div>
+                <p class="shop location">Location: {{ shop.shop_location }} {{ shop.shop_location_detail }}</p>
+                {% if shop.shop_rate_number %}
+                    <p class="shop rate">Rating: {{ (shop.shop_rate_total / shop.shop_rate_number) | round(2) }}</p>
+                {% else %}
+                    <p class="shop rate">Rating: No Data</p>
+                {% endif %}
+            </a>
+        {% endfor %}
     </div>
 {% endblock %}
