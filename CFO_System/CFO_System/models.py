@@ -27,10 +27,7 @@ class Shop(db.Model):
     shop_rate_number = db.Column(db.Integer)
     shop_balance = db.Column(db.Float)
     shop_contact = db.Column(db.String(32))
-    shop_location = db.Column(db.Enum(
-        'Student Center', 'Shaw College', 'Muse College', 'Deligentia College', 'Harmonia College',
-        'Le Tian Building', 'Zhi Ren Building', 'Zhi Xin Building', 'Research A', 'Research B',
-        'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D'), nullable=False)
+    shop_location = db.Column(db.String(32))
     shop_location_detail = db.Column(db.Text(256))
     shop_license_number = db.Column(db.String(32))
     shop_status = db.Column(db.Enum('open', 'closed', 'blocked', 'cancelled'), nullable=False)
@@ -54,7 +51,7 @@ class Product(db.Model):
     product_id = db.Column(db.Integer, primary_key=True)
     shop_id = db.Column(db.Integer, db.ForeignKey('shops.shop_id'))
     product_name = db.Column(db.String(32),index=True)
-    # product_avatar =
+    product_avatar = db.Column(db.LargeBinary)
     product_info = db.Column(db.Text(256))
     product_price = db.Column(db.Float)
     total_sale = db.Column(db.Integer)
@@ -128,11 +125,7 @@ class Order(db.Model):
     shop_id = db.Column(db.Integer, db.ForeignKey('shops.shop_id'), nullable=False, index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False, index=True)
     user_contact = db.Column(db.String(32), nullable=False)
-    user_location = db.Column(db.Enum(
-        'Student Center', 'Shaw College', 'Muse College', 'Deligentia College', 'Harmonia College', 'Le Tian Building',
-        'Zhi Ren Building', 'Zhi Xin Building', 'Cheng Dao Building', 'Dao Yuan Building', 'Li Wen Building', 'Qi Xian Building',
-        'Sports Hall', 'Research A', 'Research B', 'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D', 'Administration Building',
-        'Staff Residence 1', 'Staff Residence 2', 'Staff Residence 3', 'Staff Residence 4'), nullable=False)
+    user_location = db.Column(db.String(32))
     delivery_fee = db.Column(db.Integer, nullable=False, default=0)
     create_time = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     order_status = db.Column(db.Enum('pending', 'approved', 'denied', 'delivering', 'finished', 'cancelled'), nullable=False)
@@ -164,10 +157,7 @@ class Application(db.Model):
     shop_name = db.Column(db.String(32))
     shop_info = db.Column(db.String(256),  default='')
     shop_contact = db.Column(db.String(32))
-    shop_location = db.Column(db.Enum(
-        'Student Center', 'Shaw College', 'Muse College', 'Deligentia College', 'Harmonia College',
-        'Le Tian Building', 'Zhi Ren Building', 'Zhi Xin Building', 'Research A', 'Research B',
-        'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D'))
+    shop_location = db.Column(db.String(32))
     shop_location_detail = db.Column(db.String(256), default='')
     shop_license_number = db.Column(db.String(32), nullable=False)
     application_status = db.Column(db.Enum('pending', 'approved', 'denied'), nullable=False)
