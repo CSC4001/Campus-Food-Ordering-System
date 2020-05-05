@@ -95,7 +95,7 @@ def api_submitWithdraw():
     else:
         return jsonify({'status':'no','info':'Insufficient funds!'})
 
-# handle modification of personal infomation
+# handle modification of personal information
 @api_bp.route('/submitProsonalInfo', methods=['POST'])
 def api_submitProsonalInfo():
     data = request.get_json()
@@ -153,3 +153,66 @@ def api_submitShopApply():
         'status': 'ok',
         'info': 'Submit success!'
     })
+
+# provide selected shop index
+@api_bp.route('/getShopIndex', methods=['GET'])
+def api_getShopIndex():
+    user_id = request.args.get('user_id')
+    shop_id = request.args.get('shop_id')
+    shop = Shop.query.filter_by(shop_id=shop_id, user_id=user_id).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    if shop.shop_status == 'cancelled':
+        return jsonify({
+            'status': 'cancelled'
+        })
+    return jsonify({
+        'status': 'valid',
+        'shopid': shop.shop_id,
+        'userid': shop.user_id,
+        'name': shop.shop_name,
+        'info': shop.shop_info,
+        'shopStatus': shop.shop_status,
+        'rateTotal': shop.shop_rate_total,
+        'rateNum': shop.shop_rate_number
+    })
+
+# submit cancelling shop apply form
+@api_bp.route('/submitCancelApply', methods=['GET'])
+def api_submitCancelApply():
+    id = request.args.get('id')
+    shop = Shop.query.filter_by(shop_id=id).first()
+    if shop.shop_status == 'cancelled' or shop.shop_status == 'blocked':
+        return jsonify({'status': 'invalid'})
+    application = Application(
+        user_id=shop.user_id,
+        shop_id=shop.shop_id,
+        application_type="cancel",
+        shop_name = shop.shop_name,
+        shop_license_number = shop.shop_license_number,
+        application_status="pending"
+    )
+    db.session.add(application)
+    db.session.commit()
+    return jsonify({'status': 'success'})
+
+# submit apply for applying unblock the shop
+@api_bp.route('/submitUnblockApply', methods=['GET'])
+def api_submitUnblockApply():
+    id = request.args.get('id')
+    shop = Shop.query.filter_by(shop_id=id).first()
+    if shop.shop_status != 'blocked':
+        return jsonify({'status': 'invalid'})
+    application = Application(
+        user_id=shop.user_id,
+        shop_id=shop.shop_id,
+        application_type="unblock",
+        shop_name = shop.shop_name,
+        shop_license_number = shop.shop_license_number,
+        application_status="pending"
+    )
+    db.session.add(application)
+    db.session.commit()
+    return jsonify({'status': 'success'})
