@@ -10,7 +10,7 @@ app = Flask('customer_system')
 app.config.from_pyfile('settings.py')
 app.jinja_env.trim_blocks = True
 app.jinja_env.lstrip_blocks = True
-CORS(app)
+# CORS(app)
 
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)

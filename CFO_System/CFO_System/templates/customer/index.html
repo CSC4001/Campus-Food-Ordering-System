@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% from 'bootstrap/form.html' import render_form %}
+
+{% block navigator %}
+    <ul class="nav nav-tabs nav-justified">
+        <li class="active"><a href="#">Index&nbsp;&nbsp;&nbsp; </a></li>
+        <li>
+            <a href="{{ url_for('customer.personal_center')}}" title="Go to personal center page">Personal Center&nbsp;&nbsp;&nbsp;
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('shop.index')}}" title="Go to shop management page">My Shops&nbsp;
+            </a>
+        </li>
+
+    </ul>
+{% endblock %}
