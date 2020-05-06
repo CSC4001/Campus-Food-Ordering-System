@@ -79,7 +79,7 @@ def application_detail(application_id):
             shop_rate_total = 0,
             shop_rate_number = 0,
             shop_balance = 0,
-            shop_contact = 0,
+            shop_contact = message.shop_contact,
             shop_location = message.shop_location,
             shop_location_detail = message.shop_location_detail,
             shop_license_number = message.shop_license_number,

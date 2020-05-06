@@ -216,3 +216,60 @@ def api_submitUnblockApply():
     db.session.add(application)
     db.session.commit()
     return jsonify({'status': 'success'})
+
+# provide selected shop information
+@api_bp.route('/getShopInfo', methods=['GET'])
+def api_getShopInfo():
+    user_id = request.args.get('user_id')
+    shop_id = request.args.get('shop_id')
+    shop = Shop.query.filter_by(shop_id=shop_id, user_id=user_id).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    if shop.shop_status == 'cancelled':
+        return jsonify({
+            'status': 'cancelled'
+        })
+    return jsonify({
+        'status': 'valid',
+        'shopid': shop.shop_id,
+        'userid': shop.user_id,
+        'contact': shop.shop_contact,
+        'name': shop.shop_name,
+        'info': shop.shop_info,
+        'delivery': shop.shop_delivery_fee,
+        'location': shop.shop_location,
+        'locationDetail': shop.shop_location_detail,
+        'shopStatus': shop.shop_status,
+        'licenseNum':shop.shop_license_number
+    })
+
+# submit shop info form
+@api_bp.route('/submitShopInfo', methods=['POST'])
+def api_submitShopInfo():
+    data = request.get_json()
+    userid = data['userid']
+    shopid = data['shopid']
+    shop = Shop.query.filter_by(shop_id=shopid, user_id=userid).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    if shop.shop_status == 'blocked':
+        return jsonify({
+            'status': 'blocked'
+        })
+    shop.shop_name = data['name']
+    shop.shop_contact = data['contact']
+    shop.shop_location = data['location']
+    shop.shop_location_detail = data['locationDetail']
+    shop.shop_license_number = data['licenseNum']
+    shop.shop_info = data['info']
+    shop.shop_delivery_fee = data['delivery']
+    shop.shop_status = data['shopStatus']
+    db.session.commit()
+    return jsonify({
+        'status': 'ok',
+        'info': 'Submit success!'
+    })

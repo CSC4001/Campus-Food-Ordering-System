@@ -138,6 +138,7 @@
           licenseNum: '',
           info: ''
         },
+        // validation rules
         rules: {
           name: [
             { required: true, message: 'Please input Shop name', trigger: 'blur' },
@@ -161,6 +162,7 @@
         }
       };
     },
+    // get shops' index
     created: function() {
       Vue.axios.get('/api/getMyShop', {
         params: {
@@ -172,9 +174,12 @@
       })
     },
     methods: {
+      // go to shop system
       handleShopURL(id) {
-        this.$router.push({path:`/shopsystem/${id}`}).catch(err => {err})
+        sessionStorage.setItem('shop_id',id)
+        this.$router.push({path:'/shopsystem'}).catch(err => {err})
       },
+      // submit open shop apply
       submitApplyForm(formName){
         this.$refs[formName].validate((valid) => {
           if (valid) {
@@ -191,6 +196,7 @@
               console.log(data)
               if (data.status == 'ok'){
                 this.$message.success(data.info);
+                this.$data.applyFormVisible = false;
               } else {
                 this.$message.error(data.info);
                 return false;

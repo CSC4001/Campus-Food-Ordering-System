@@ -52,7 +52,7 @@ export default new Router({
             component: MyShop
         },
         {
-            path: '/shopsystem/:shop_id',
+            path: '/shopsystem/',
             name: 'ShopSystem',
             component: ShopSystem
         },

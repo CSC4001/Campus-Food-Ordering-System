@@ -10,10 +10,12 @@
             <i class="el-icon-menu"></i>
             <span slot="title">Help</span>
         </el-menu-item>
+        <router-link to="/">
         <el-menu-item index="2">
             <i class="el-icon-menu"></i>
             <span slot="title">Back to Previous</span>
         </el-menu-item>
+        </router-link>
         </el-menu>
     </el-col>
 </el-row>
