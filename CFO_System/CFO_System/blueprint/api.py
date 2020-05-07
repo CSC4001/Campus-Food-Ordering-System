@@ -131,3 +131,46 @@ def api_getMyShop():
             a['shop_status'] = shop.shop_status
             result.append(a)
         return Response(json.dumps(result),  mimetype='application/json')
+
+# create open shop application
+@api_bp.route('/submitShopOpenApplication', methods=['POST'])
+def api_submitShopOpenApplciation():
+    data = request.get_json()
+    user_id = data['id']
+    app_type='open'
+    shop_id = -1
+    name = data['name']
+    info = data['info']
+    contact = data['contact']
+    location_detail = data['locationDetail']
+    license_number = data['licenseNum']
+    app_status = 'pending'
+    application = Application(user_id=user_id,application_type=app_type,
+    shop_id=shop_id, shop_name=name, shop_info=info, shop_contact=contact,
+    shop_location_detail=location_detail, shop_license_number=license_number,
+    application_status=app_status)
+    db.session.add(application)
+    db.session.commit()
+    test = Application.query.filter_by(user_id=user_id).first()
+    if test.user_name == username:
+        return jsonify({'status':'ok','info':'submit successfully'})
+    return jsonify({'status':'no','info':'submit failure'})
+
+# provide admin application
+@api_bp.route('/getApplication', methods=['GET'])
+def api_getApplication():
+    data = request.args.get('type')
+    message = Application.query.filter_by(application_type=data, application_status='pending').all()
+    if len(message) == 0:
+        return jsonify({})
+    else:
+        result = list()
+        for application in message:
+            temp = dict()
+            temp['application_id'] = application.application_id
+            temp['shop_name'] = application.shop_name
+            temp['shop_id'] = application.shop_id
+            temp['location'] = application.shop_location
+            temp['license'] = application.shop_license_number
+            result.append(temp)
+        return Response(json.dumps(result), mimetype='application/json')
