@@ -6,7 +6,7 @@
         <el-menu-item index="3"><el-link href="http://localhost:8080/#/admin/shopmanagement">Shop Management</el-link></el-menu-item>
         <el-menu-item index="4"><el-link href="http://localhost:8080/#/admin/ordermanagement">Order Management</el-link></el-menu-item>
         <!-- sign in button -->
-        <el-button @click="loginFormVisible = true">Sign out</el-button>
+        <el-button @click="logout" style="margin-top:10px">Log out</el-button>
 
     </el-menu>
 </div>
@@ -31,6 +31,11 @@ export default {
       };
     },
     methods: {
+      logout() {
+        sessionStorage.removeItem('accessToken');
+        this.$message.success('You have successfully logout');
+        this.$router.push({path:'/login'}).catch(err => {err});
+      },
       handleSelect(key, keyPath) {
         console.log(key, keyPath);
       },
