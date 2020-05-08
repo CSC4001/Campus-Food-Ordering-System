@@ -110,46 +110,6 @@
   import Vue from 'vue'
   import Header from '@/components/Admin/Header'
   import Sidebar from '@/components/Admin/Sidebar'
-  const columns = [
-    // {
-    //   title: 'Application ID',
-    //   dataIndex: 'application_id',
-    //   sorter: true,
-    //   width: '13%',
-    //   scopedSlots: { customRender: 'application_id'},
-    // },
-    {
-      title: 'Shop',
-      dataIndex: 'shop_name',
-      sorter: true,
-      width: '10%',
-      scopedSlots: { customRender: 'shop_name' },
-    },
-    {
-      title: 'Contact',
-      dataIndex: 'contact',
-      sorter: true,
-      width: '10%',
-      scopedSlots: { customRender: 'contact'}
-    },
-    {
-      title: 'Location',
-      dataIndex: 'location', 
-      width: '15%',
-      scopedSlots: {customRender: 'location'}
-    },
-    {
-        title: 'Overview',
-        dataIndex: 'info',
-        scopedSlots: {customRender: 'info'}
-    },
-    // {
-
-    //     key: 'action',
-    //     scopedSlots: { customRender: 'action' },
-    //     width: '10%'
-    // },
-  ];
 
   export default {
     name: "OpenApplication",
@@ -171,13 +131,8 @@
           license: '',
           info: '',
         },
-        operation:{
-          app_id:'',
-          op_type: '',
-        },
         pagination: {},
         loading: false,
-        columns,
       };
     },
     methods: {
@@ -226,22 +181,6 @@
           ...filters,
         });
       },
-      rowClick(record){
-        return {
-          on: {
-            click: () => {
-              this.app_detail.application_id = record.application_id
-                 this.app_detail.user_id = record.user_id
-                 this.app_detail.shop_name = record.shop_name
-                 this.app_detail.contact = record.contact
-                 this.app_detail.license = record.license
-                 this.app_detail.info = record.info
-                //  console.log(this.app_detail.application_id
-                  this.detailsVisible = true;
-               }
-            }
-        }
-    },
     handleClose(done) {
         this.$confirm('Sure to close?')
           .then(_ => {
@@ -262,9 +201,6 @@
       this.detailsVisible = true;
       console.log(record)
     },
-    openDialog(record){
-      console.log(record.application_id)
-    }
 
       // fetch(params = {}) {
       //   console.log('params:', params);

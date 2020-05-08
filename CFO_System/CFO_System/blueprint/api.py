@@ -381,7 +381,6 @@ def api_getOpenApplication():
             temp['application_id'] = application.application_id
             temp['user_id'] = application.user_id
             temp['shop_name'] = application.shop_name
-            # temp['shop_id'] = application.shop_id
             temp['contact'] = application.shop_contact
             temp['location'] = application.shop_location
             temp['detail_location'] = application.shop_location_detail
@@ -406,9 +405,8 @@ def api_getCloseApplication():
             temp['user_id'] = application.user_id
             temp['shop_id'] = application.shop_id
             temp['shop_name'] = application.shop_name
-            # temp['shop_id'] = application.shop_id
-            temp['contact'] = application.shop_contact
-            temp['location'] = application.shop_location
+            # temp['contact'] = application.shop_contact
+            # temp['location'] = application.shop_location
             temp['license'] = application.shop_license_number
             temp['info'] = application.shop_info
             result.append(temp)
@@ -452,4 +450,8 @@ def api_operateApplication():
             db.session.commit()
             return jsonify({'status': 'ok', 'info':'approve success'})
         if app_type == 'cancel':
-            return jsonify({'op':'fail'})
+            shop_id = application.shop_id
+            shop = Shop.query.get(shop_id)
+            shop.shop_status = 'cancelled'
+            db.session.commit()
+            return jsonify({'status': 'ok', 'info': 'cancel success'})
