@@ -12,31 +12,31 @@
           <ApplicationMain/> <!-- Alterable Main Content-->
         </el-main>
       </el-container>
-    </el-container>
+    </el-container>   
   </div>
 </template>
 
 <script>
-import Header from '@/components/Header.vue';
-import Sidebar from '@/components/Sidebar.vue';
-import ApplicationMain from '@/components/ApplicationMain.vue';
+  import Header from '@/components/Admin/Header'
+  import Sidebar from '@/components/Admin/Sidebar'
+  import ApplicationMain from '@/components/Admin/ApplicationMain'
 
-export default {
-  name: 'Application',
+  export default {
+    name: 'Application',
 
-  data() {
-    return {
+    data() {
+      return {
 
-    };
-  },
-  methods: {
+      };
+    },
+    methods: {
 
-  },
-  components: {
-    Header,
-    Sidebar,
-    ApplicationMain,
-  },
+    },
+    components: {
+      Header,
+      Sidebar,
+      ApplicationMain,
+    },
 
-};
+  };
 </script>

@@ -1,15 +1,5 @@
 <template>
-  <div style="height:100%;">
-    <el-container direction='vertical'>
-      <el-header style="margin:1px;">
-        <Header/> <!-- Fixed Header-->
-      </el-header>
-      <el-container>
-        <el-aside width="15%">
-          <Sidebar/> <!-- Fixed Sidebar-->
-        </el-aside>
-        <el-main>
-          <a-table
+   <a-table
     :columns="columns"
     :rowKey="record => record.login.uuid"
     :dataSource="data"
@@ -66,15 +56,8 @@
     </span>
     <span slot="shop_id" slot-scope="location">{{location.postcode}}</span>
   </a-table>
-        </el-main>
-      </el-container>
-    </el-container>   
-  </div>
 </template>
-
 <script>
-  import Header from '@/components/Admin/Header'
-  import Sidebar from '@/components/Admin/Sidebar'
 import reqwest from 'reqwest';
   const columns = [
     // {
@@ -122,7 +105,6 @@ import reqwest from 'reqwest';
   ];
 
   export default {
-    name: "CloseApplication",
     mounted() {
       this.fetch();
     },
@@ -185,13 +167,5 @@ import reqwest from 'reqwest';
         });
       },
     },
-    components: {
-      Header,
-      Sidebar,
-    },
   };
-
-
-
 </script>
-

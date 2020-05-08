@@ -14,8 +14,7 @@ import ShopOrderManagement from '@/components/Shop/OrderManagement'
 import Information from '@/components/Shop/Information'
 //admin
 import AdminSystem from '@/components/Admin/AdminSystem'
-import CloseApplication from '@/components/Admin/CloseApplication'
-import OpenApplication from '@/components/Admin/OpenApplication'
+import Application from '@/components/Admin/Application'
 import UserManagement from '@/components/Admin/UserManagement'
 import ShopManagement from '@/components/Admin/ShopManagement'
 import AdminOrderManagement from '@/components/Admin/OrderManagement'
@@ -78,14 +77,9 @@ export default new Router({
             component: AdminSystem
         },
         {
-            path: '/admin/closeapplication',
-            name: 'CloseApplication',
-            component: CloseApplication
-        },
-        {
-            path: '/admin/openapplication',
-            name: 'OpenApplication',
-            component: OpenApplication
+            path: '/admin/application',
+            name: 'Application',
+            component: Application
         },
         {
             path: '/admin/usermanagement',
