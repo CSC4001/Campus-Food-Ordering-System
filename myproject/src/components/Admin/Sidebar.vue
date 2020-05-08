@@ -1,23 +1,33 @@
 <template>
-<div>
-<el-row class="tac" style="height:100%;">
-    <el-col style="height:100%;">
+  <div class="sidebar">
+    <el-row class="tac" style="height:100%;">
+      <el-col style="height:100%;">
         <el-menu
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose" style="height:100%;">
-        <el-menu-item index="1">
+        <router-link to="/admin/openapplication">
+          <el-menu-item index="1">
             <i class="el-icon-menu"></i>
             <span slot="title">Open Shop Application</span>
-        </el-menu-item>
-        <el-menu-item index="2">
+          </el-menu-item>
+        </router-link>
+        <router-link to="/admin/closeapplication">
+          <el-menu-item index="2">
             <i class="el-icon-menu"></i>
             <span slot="title">Close Shop Application</span>
-        </el-menu-item>
+          </el-menu-item>
+        </router-link>
+        <router-link to="/admin/unblockapplication">
+          <el-menu-item index="3">
+            <i class="el-icon-menu"></i>
+            <span slot="title">Unblock Shop Application</span>
+          </el-menu-item>
+        </router-link>
         </el-menu>
-    </el-col>
-</el-row>
-</div>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
@@ -34,3 +44,8 @@
   }
 </script>
 
+<style>
+    .sidebar {
+        overflow:hidden;
+    }
+</style>

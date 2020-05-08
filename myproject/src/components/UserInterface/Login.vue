@@ -63,7 +63,7 @@ export default {
                     this.$message.success(data.info);
                 } else if (data.status == 'admin') {
                     sessionStorage.setItem('accessToken',data.session)
-                    this.$router.push({path:'/admin'}).catch(err => {err})
+                    this.$router.push({path:'/adminsystem'}).catch(err => {err})
                     this.$message.success('welcome back, admin!');
                 } else {
                     this.$message.error(data.info);
