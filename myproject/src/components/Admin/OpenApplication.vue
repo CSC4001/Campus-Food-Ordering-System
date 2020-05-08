@@ -78,52 +78,6 @@
   import Vue from 'vue'
   import Header from '@/components/Admin/Header'
   import Sidebar from '@/components/Admin/Sidebar'
-// import reqwest from 'reqwest';
-  const columns = [
-    // {
-    //   title: 'No.', //from 1-10
-    //   dataIndex: 'number', //data index in result (json)
-    //   width: '7%',
-    // },
-    {
-      title: 'Application ID',
-      dataIndex: 'application_id',
-      sorter: true,
-      width: '13%',
-      scopedSlots: { customRender: 'application_id'},
-    },
-    {
-      title: 'Shop',
-      dataIndex: 'shop_name',
-      sorter: true,
-      width: '10%',
-      scopedSlots: { customRender: 'shop_name' },
-    },
-    {
-      title: 'Shop ID',
-      dataIndex: 'shop_id',
-      sorter: true,
-      width: '10%',
-      scopedSlots: { customRender: 'shop_id'}
-    },
-    {
-      title: 'Location',
-      dataIndex: 'location', 
-      width: '15%',
-      scopedSlots: {customRender: 'location'}
-    },
-    {
-        title: 'Overview',
-        dataIndex: 'overview',
-    },
-    {
-        title: 'Action',
-        key: 'action',
-        scopedSlots: { customRender: 'action' },
-        width: '10%'
-    },
-
-  ];
 
   export default {
     name: "OpenApplication",
@@ -136,9 +90,17 @@
         rejectDialogVisible: false,
         passDialogVisible: false,
         data: [],
+        app_detail: {
+          application_id: '',
+          user_id: '',
+          shop_name: '',
+          contact: '',
+          location: '',
+          license: '',
+          info: '',
+        },
         pagination: {},
         loading: false,
-        columns,
       };
     },
     methods: {
@@ -167,6 +129,27 @@
           ...filters,
         });
       },
+    handleClose(done) {
+        this.$confirm('Sure to close?')
+          .then(_ => {
+            console.log(_)
+            done();
+          })
+          .catch(_ => {
+            console.log(_)
+          });
+    },
+    viewDetails(record){
+      this.app_detail.application_id = record.application_id
+      this.app_detail.user_id = record.user_id
+      this.app_detail.shop_name = record.shop_name
+      this.app_detail.contact = record.contact
+      this.app_detail.license = record.license
+      this.app_detail.info = record.info
+      this.detailsVisible = true;
+      console.log(record)
+    },
+
       // fetch(params = {}) {
       //   console.log('params:', params);
       //   this.loading = true;

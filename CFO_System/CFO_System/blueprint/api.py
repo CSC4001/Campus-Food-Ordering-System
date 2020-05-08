@@ -169,8 +169,75 @@ def api_getApplication():
             temp = dict()
             temp['application_id'] = application.application_id
             temp['shop_name'] = application.shop_name
-            temp['shop_id'] = application.shop_id
+            temp['contact'] = application.shop_contact
             temp['location'] = application.shop_location
+            temp['detail_location'] = application.shop_location_detail
+            temp['license'] = application.shop_license_number
+            temp['info'] = application.shop_info
+            result.append(temp)
+            key += 1
+        return Response(json.dumps(result), mimetype='application/json')
+
+@api_bp.route('getCloseApplication', methods=['GET'])
+def api_getCloseApplication():
+    message = Application.query.filter_by(application_type='cancel', application_status='pending').all()
+    if len(message) == 0:
+        return jsonify({})
+    else:
+        result = list()
+        key = 1
+        for application in message:
+            temp = dict()
+            temp['key'] = key
+            temp['application_id'] = application.application_id
+            temp['user_id'] = application.user_id
+            temp['shop_id'] = application.shop_id
+            temp['shop_name'] = application.shop_name
+            # temp['contact'] = application.shop_contact
+            # temp['location'] = application.shop_location
             temp['license'] = application.shop_license_number
             result.append(temp)
         return Response(json.dumps(result), mimetype='application/json')
+
+#application operation
+@api_bp.route('/operateApplication', methods=['POST'])
+def api_operateApplication():
+    # app_id = request.args.get(app_id)
+    data = request.get_json()
+    op_type = data['op_type']
+    app_id = data['app_id']
+    application = Application.query.get(app_id)
+    if op_type == 'denied' :
+        # application.application_status = 'denied'
+        db.session.commit()
+        return jsonify({
+            'status': 'ok',
+            'info': 'Denied success!'
+        })
+    else: #if approve
+        app_type = application.application_type
+        application.application_status = 'approved'
+        if app_type == 'open':
+            # create shop
+            user_id = application.user_id
+            shop_name = application.shop_name
+            shop_info = application.shop_info
+            shop_contact = application.shop_contact
+            shop_location = application.shop_location
+            shop_location_detail = application.shop_location_detail
+            shop_license = application.shop_license_number
+            shop = Shop(user_id=user_id, shop_name=shop_name,
+            shop_info=shop_info, shop_contact=shop_contact,
+            shop_location=shop_location, shop_location_detail=shop_location_detail,
+            shop_license_number=shop_license, shop_status='open',)
+            db.session.add(shop)
+            # db.add(shop)
+            # db.commit()
+            db.session.commit()
+            return jsonify({'status': 'ok', 'info':'approve success'})
+        if app_type == 'cancel':
+            shop_id = application.shop_id
+            shop = Shop.query.get(shop_id)
+            shop.shop_status = 'cancelled'
+            db.session.commit()
+            return jsonify({'status': 'ok', 'info': 'cancel success'})
