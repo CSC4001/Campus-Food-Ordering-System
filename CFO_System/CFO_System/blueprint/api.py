@@ -95,7 +95,7 @@ def api_submitWithdraw():
     else:
         return jsonify({'status':'no','info':'Insufficient funds!'})
 
-# handle modification of personal infomation
+# handle modification of personal information
 @api_bp.route('/submitProsonalInfo', methods=['POST'])
 def api_submitProsonalInfo():
     data = request.get_json()
@@ -132,45 +132,236 @@ def api_getMyShop():
             result.append(a)
         return Response(json.dumps(result),  mimetype='application/json')
 
-# create open shop application
-@api_bp.route('/submitShopOpenApplication', methods=['POST'])
-def api_submitShopOpenApplciation():
+# submit shop apply form
+@api_bp.route('/submitShopApply', methods=['POST'])
+def api_submitShopApply():
     data = request.get_json()
-    user_id = data['id']
-    app_type='open'
-    shop_id = -1
-    name = data['name']
-    info = data['info']
-    contact = data['contact']
-    location_detail = data['locationDetail']
-    license_number = data['licenseNum']
-    app_status = 'pending'
-    application = Application(user_id=user_id,application_type=app_type,
-    shop_id=shop_id, shop_name=name, shop_info=info, shop_contact=contact,
-    shop_location_detail=location_detail, shop_license_number=license_number,
-    application_status=app_status)
+    application = Application(
+        user_id = data['id'],
+        application_type="open",
+        shop_name = data['name'],
+        shop_contact = data['contact'],
+        shop_license_number = data['licenseNum'],
+        shop_location = data['location'],
+        shop_location_detail = data['locationDetail'],
+        shop_info=data['info'],
+        application_status="pending"
+    )
     db.session.add(application)
     db.session.commit()
-    test = Application.query.filter_by(user_id=user_id).first()
-    if test.user_name == username:
-        return jsonify({'status':'ok','info':'submit successfully'})
-    return jsonify({'status':'no','info':'submit failure'})
+    return jsonify({
+        'status': 'ok',
+        'info': 'Submit success!'
+    })
 
-# provide admin application
-@api_bp.route('/getApplication', methods=['GET'])
-def api_getApplication():
-    data = request.args.get('type')
-    message = Application.query.filter_by(application_type=data, application_status='pending').all()
+# provide selected shop index
+@api_bp.route('/getShopIndex', methods=['GET'])
+def api_getShopIndex():
+    user_id = request.args.get('user_id')
+    shop_id = request.args.get('shop_id')
+    shop = Shop.query.filter_by(shop_id=shop_id, user_id=user_id).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    if shop.shop_status == 'cancelled':
+        return jsonify({
+            'status': 'cancelled'
+        })
+    return jsonify({
+        'status': 'valid',
+        'shopid': shop.shop_id,
+        'userid': shop.user_id,
+        'name': shop.shop_name,
+        'info': shop.shop_info,
+        'shopStatus': shop.shop_status,
+        'rateTotal': shop.shop_rate_total,
+        'rateNum': shop.shop_rate_number
+    })
+
+# submit cancelling shop apply form
+@api_bp.route('/submitCancelApply', methods=['GET'])
+def api_submitCancelApply():
+    id = request.args.get('id')
+    shop = Shop.query.filter_by(shop_id=id).first()
+    if shop.shop_status == 'cancelled' or shop.shop_status == 'blocked':
+        return jsonify({'status': 'invalid'})
+    application = Application(
+        user_id=shop.user_id,
+        shop_id=shop.shop_id,
+        application_type="cancel",
+        shop_name = shop.shop_name,
+        shop_license_number = shop.shop_license_number,
+        application_status="pending"
+    )
+    db.session.add(application)
+    db.session.commit()
+    return jsonify({'status': 'success'})
+
+# submit apply for applying unblock the shop
+@api_bp.route('/submitUnblockApply', methods=['GET'])
+def api_submitUnblockApply():
+    id = request.args.get('id')
+    shop = Shop.query.filter_by(shop_id=id).first()
+    if shop.shop_status != 'blocked':
+        return jsonify({'status': 'invalid'})
+    application = Application(
+        user_id=shop.user_id,
+        shop_id=shop.shop_id,
+        application_type="unblock",
+        shop_name = shop.shop_name,
+        shop_license_number = shop.shop_license_number,
+        application_status="pending"
+    )
+    db.session.add(application)
+    db.session.commit()
+    return jsonify({'status': 'success'})
+
+# provide selected shop information
+@api_bp.route('/getShopInfo', methods=['GET'])
+def api_getShopInfo():
+    user_id = request.args.get('user_id')
+    shop_id = request.args.get('shop_id')
+    shop = Shop.query.filter_by(shop_id=shop_id, user_id=user_id).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    if shop.shop_status == 'cancelled':
+        return jsonify({
+            'status': 'cancelled'
+        })
+    return jsonify({
+        'status': 'valid',
+        'shopid': shop.shop_id,
+        'userid': shop.user_id,
+        'contact': shop.shop_contact,
+        'name': shop.shop_name,
+        'info': shop.shop_info,
+        'delivery': shop.shop_delivery_fee,
+        'location': shop.shop_location,
+        'locationDetail': shop.shop_location_detail,
+        'shopStatus': shop.shop_status,
+        'licenseNum':shop.shop_license_number
+    })
+
+# submit shop info form
+@api_bp.route('/submitShopInfo', methods=['POST'])
+def api_submitShopInfo():
+    data = request.get_json()
+    userid = data['userid']
+    shopid = data['shopid']
+    shop = Shop.query.filter_by(shop_id=shopid, user_id=userid).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    if shop.shop_status == 'blocked':
+        return jsonify({
+            'status': 'blocked'
+        })
+    shop.shop_name = data['name']
+    shop.shop_contact = data['contact']
+    shop.shop_location = data['location']
+    shop.shop_location_detail = data['locationDetail']
+    shop.shop_license_number = data['licenseNum']
+    shop.shop_info = data['info']
+    shop.shop_delivery_fee = data['delivery']
+    shop.shop_status = data['shopStatus']
+    db.session.commit()
+    return jsonify({
+        'status': 'ok',
+        'info': 'Submit success!'
+    })
+
+
+#API for admin
+#provide admin application
+@api_bp.route('/getOpenApplication', methods=['GET'])
+def api_getOpenApplication():
+    message = Application.query.filter_by(application_type='open', application_status='pending').all()
     if len(message) == 0:
         return jsonify({})
     else:
         result = list()
+        key = 1
         for application in message:
             temp = dict()
+            temp['key'] = key
             temp['application_id'] = application.application_id
+            temp['user_id'] = application.user_id
             temp['shop_name'] = application.shop_name
+            # temp['shop_id'] = application.shop_id
+            temp['contact'] = application.shop_contact
+            temp['location'] = application.shop_location
+            temp['detail_location'] = application.shop_location_detail
+            temp['license'] = application.shop_license_number
+            temp['info'] = application.shop_info
+            result.append(temp)
+            key += 1
+        return Response(json.dumps(result), mimetype='application/json')
+
+@api_bp.route('getCloseApplication', methods=['GET'])
+def api_getCloseApplication():
+    message = Application.query.filter_by(application_type='cancel', application_status='pending').all()
+    if len(message) == 0:
+        return jsonify({})
+    else:
+        result = list()
+        key = 1
+        for application in message:
+            temp = dict()
+            temp['key'] = key
+            temp['application_id'] = application.application_id
+            temp['user_id'] = application.user_id
             temp['shop_id'] = application.shop_id
+            temp['shop_name'] = application.shop_name
+            # temp['shop_id'] = application.shop_id
+            temp['contact'] = application.shop_contact
             temp['location'] = application.shop_location
             temp['license'] = application.shop_license_number
+            temp['info'] = application.shop_info
             result.append(temp)
+            key += 1
         return Response(json.dumps(result), mimetype='application/json')
+
+#application operation
+@api_bp.route('/operateApplication', methods=['POST'])
+def api_operateApplication():
+    # app_id = request.args.get(app_id)
+    data = request.get_json()
+    op_type = data['op_type']
+    app_id = data['app_id']
+    application = Application.query.get(app_id)
+    if op_type == 'denied' :
+        # application.application_status = 'denied'
+        db.session.commit()
+        return jsonify({
+            'status': 'ok',
+            'info': 'Denied success!'
+        })
+    else: #if approve
+        app_type = application.application_type
+        application.application_status = 'approved'
+        if app_type == 'open':
+            # create shop
+            user_id = application.user_id
+            shop_name = application.shop_name
+            shop_info = application.shop_info
+            shop_contact = application.shop_contact
+            shop_location = application.shop_location
+            shop_location_detail = application.shop_location_detail
+            shop_license = application.shop_license_number
+            shop = Shop(user_id=user_id, shop_name=shop_name,
+            shop_info=shop_info, shop_contact=shop_contact,
+            shop_location=shop_location, shop_location_detail=shop_location_detail,
+            shop_license_number=shop_license, shop_status='open',)
+            db.session.add(shop)
+            # db.add(shop)
+            # db.commit()
+            db.session.commit()
+            return jsonify({'status': 'ok', 'info':'approve success'})
+        if app_type == 'cancel':
+            return jsonify({'op':'fail'})
+    # else: #if approve
+

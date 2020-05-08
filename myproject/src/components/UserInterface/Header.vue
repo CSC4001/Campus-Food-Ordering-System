@@ -26,7 +26,7 @@ export default {
     },
     methods: {
         logout() {
-            sessionStorage.removeItem('accessToken');
+            sessionStorage.clear();
             this.$message.success('You have successfully logout');
             this.$router.push({path:'/login'}).catch(err => {err});
         },

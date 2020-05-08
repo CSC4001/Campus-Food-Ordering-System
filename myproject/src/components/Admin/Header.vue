@@ -1,7 +1,7 @@
 <template>
 <div style="height:100%;">
     <el-menu :default-active="activeIndex" mode="horizontal" justify="start" align="middle" @select="handleSelect">
-        <el-menu-item index="1"><el-link href="http://localhost:8080/#/admin" v-on:click="test">Front Page</el-link></el-menu-item>
+        <el-menu-item index="1"><el-link href="http://localhost:8080/#/adminsystem">Front Page</el-link></el-menu-item>
         <el-menu-item index="2"><el-link href="http://localhost:8080/#/admin/usermanagement">User Management</el-link></el-menu-item>
         <el-menu-item index="3"><el-link href="http://localhost:8080/#/admin/shopmanagement">Shop Management</el-link></el-menu-item>
         <el-menu-item index="4"><el-link href="http://localhost:8080/#/admin/ordermanagement">Order Management</el-link></el-menu-item>

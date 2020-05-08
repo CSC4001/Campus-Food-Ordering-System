@@ -13,6 +13,7 @@ import router from './router'
 import Antd from 'ant-design-vue';
 import 'ant-design-vue/dist/antd.css';
 import ElementUI from 'element-ui';
+import locale from 'element-ui/lib/locale/lang/en'
 import 'element-ui/lib/theme-chalk/index.css';
 import Avue from '@smallwei/avue';
 import '@smallwei/avue/lib/index.css';
@@ -23,7 +24,7 @@ import VueAxios from 'vue-axios'
 Vue.config.productionTip = false;
 
 Vue.use(Antd);
-Vue.use(ElementUI);
+Vue.use(ElementUI, { locale })
 Vue.use(Avue)
 Vue.use(VueAxios, axios)
 
