@@ -275,6 +275,96 @@ def api_submitShopInfo():
     })
 
 
+# provide selected shop's dishes information
+@api_bp.route('/getDishes', methods=['GET'])
+def api_getDishes():
+    user_id = request.args.get('user_id')
+    shop_id = request.args.get('shop_id')
+    shop = Shop.query.filter_by(shop_id=shop_id, user_id=user_id).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    if shop.shop_status == 'blocked':
+        return jsonify({
+            'status': 'blocked'
+        })
+    dishes = Product.query.filter_by(shop_id=shop_id).all()
+    result = list()
+    for i in dishes:
+        a = dict()
+        a['productid'] = i.product_id
+        a['name'] = i.product_name
+        a['info'] = i.product_info
+        a['price'] = i.product_price
+        a['sale'] = i.total_sale
+        result.append(a)
+    return Response(json.dumps(result),  mimetype='application/json')
+
+# submit dish form
+@api_bp.route('/submitDish', methods=['POST'])
+def submitDish():
+    data = request.get_json()
+    userid = data['userid']
+    shopid = data['shopid']
+    shop = Shop.query.filter_by(shop_id=shopid, user_id=userid).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    product = Product(
+        shop_id=shopid,
+        product_name=data['name'],
+        product_price=data['price'],
+        product_info=data['info'],
+        total_sale=0
+    )
+    db.session.add(product)
+    db.session.commit()
+    return jsonify({
+        'status': 'ok'
+    })
+
+# edit dish form
+@api_bp.route('/editDish', methods=['POST'])
+def editDish():
+    data = request.get_json()
+    userid = data['userid']
+    shopid = data['shopid']
+    shop = Shop.query.filter_by(shop_id=shopid, user_id=userid).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    product = Product.query.get(data['productid'])
+    product.product_name=data['name']
+    product.product_price=data['price']
+    product.product_info=data['info']
+    db.session.commit()
+    return jsonify({
+        'status': 'ok'
+    })
+
+# delete dish
+@api_bp.route('/deleteDish', methods=['POST'])
+def deleteDish():
+    data = request.get_json()
+    userid = data['userid']
+    shopid = data['shopid']
+    productid = data['productid']
+    shop = Shop.query.filter_by(shop_id=shopid, user_id=userid).first_or_404()
+    if shop is None:
+        return jsonify({
+            'status': 'invalid'
+        })
+    product = Product.query.get(productid)
+    db.session.delete(product)
+    db.session.commit()
+    return jsonify({
+        'status': 'ok'
+    })
+
+
 #API for admin
 #provide admin application
 @api_bp.route('/getOpenApplication', methods=['GET'])
@@ -363,5 +453,3 @@ def api_operateApplication():
             return jsonify({'status': 'ok', 'info':'approve success'})
         if app_type == 'cancel':
             return jsonify({'op':'fail'})
-    # else: #if approve
-
