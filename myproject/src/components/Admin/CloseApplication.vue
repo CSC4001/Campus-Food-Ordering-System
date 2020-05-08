@@ -10,95 +10,61 @@
         </el-aside>
         <el-main>
           <a-table
-
-
+    :columns="columns"
+    :rowKey="record => record.login.uuid"
     :dataSource="data"
     :pagination="pagination"
     :loading="loading"
     @change="handleTableChange"
     size="middle"
   >
-    <a-table-column key="application_id" title="Application ID" >
-    <template slot-scope="record">
-      <span> {{record.application_id}} </span>
-    </template>
-  </a-table-column>
-  <a-table-column key="shop_name" title="Shop">
-    <template slot-scope="record">
-      <span> {{record.shop_name}}</span>
-    </template>
-  </a-table-column>
-  <!-- <a-table-column key="contact" title="Contact">
-    <template slot-scope="record">
-      <span> {{record.contact}}</span>
-    </template>
-  </a-table-column>
-  <a-table-column key="location" title="Location">
-    <template slot-scope="record">
-      <span>{{record.location}}</span>
-    </template>
-  </a-table-column>
-  <a-table-column key="info" title="Overview">
-    <template slot-scope="record">
-      <span>{{record.info}}</span>
-    </template>
-  </a-table-column> -->
-    <a-table-column key="action" title="Action">
-      <template slot-scope="record">
-        <span>
-          <el-button type="text" @click="viewDetails(record)"> details</el-button>
+    <span slot="name" slot-scope="name">{{name.last}}</span>
+    <span slot="location" slot-scope="location">{{location.city}}</span>
+    <span slot="action">
+        <el-button type="text" @click="detailsVisible = true">Details</el-button>
+        <el-dialog
+          :visible.sync="detailsVisible"
+          width="30%"
+          center>
+          <span>ID:</span><span> id </span>
+          <br>
+          <span>Shop:</span><span> a shop </span>
+          <br>
+          <span>Location:</span><span> Letian </span>
+          <br>
+          <span>Relevant Information</span>
+          <div>
+            some info
+          </div>
+          <!-- reject confirm -->
           <el-dialog
-
-            :before-close="handleClose"
-            :visible.sync="detailsVisible"
             width="30%"
-            center>
-            <span>ID:</span><span> {{app_detail.application_id}} </span>
-            <br>
-            <span>User ID:</span><span> {{app_detail.user_id}}</span>
-            <br>
-            <span>Shop:</span><span> {{app_detail.shop_name}} </span>
-            <br>
-            <!-- <span>Location:</span><span> {{app_detail.location}} </span>
-            <br>
-            <span>Contact:</span><span> {{app_detail.contact}} </span>
-            <br> -->
-            <span>License:</span><span> {{app_detail.license}} </span>
-            <br>
-            <!-- <span>Relevant Information</span>
-            <div>
-              {{app_detail.info}}
-            </div> -->
-            <!-- deny confirm -->
-            <el-dialog
-              width="30%"
-              :visible.sync="denyDialogVisible"
-              append-to-body>
-              Are you sure to deny?
-              <span slot="footer" class="dialog-footer">
-                <el-button size="medium" type="text" @click="denyDialogVisible = false">No</el-button>
-                <el-button size="medium" type="primary" @click="handleDeny()">Yes</el-button>
-              </span>
-            </el-dialog>
-            <!-- approve confirm -->
-            <el-dialog
-              width="30%"
-              :visible.sync="approveDialogVisible"
-              append-to-body>
-              Are you sure to approve?
-              <span slot="footer" class="dialog-footer">
-                <el-button size="medium" type="text" @click="approveDialogVisible = false">No</el-button>
-                <el-button size="medium" type="primary" @click="handleApprove()">Yes</el-button>
-              </span>
-            </el-dialog>
+            :visible.sync="rejectDialogVisible"
+            append-to-body>
+            Are you sure to reject?
             <span slot="footer" class="dialog-footer">
-              <el-button size="medium" type="text" @click="denyDialogVisible = true">Deny</el-button>
-              <el-button size="medium" type="primary" @click="approveDialogVisible = true">Approve</el-button>
+              <el-button size="medium" type="text" @click="rejectDialogVisible = false">No</el-button>
+              <el-button size="medium" type="primary" @click="handleReject">Yes</el-button>
             </span>
           </el-dialog>
-        </span>
-      </template>
-    </a-table-column>
+          <!-- pass confirm -->
+          <el-dialog
+            width="30%"
+            :visible.sync="passDialogVisible"
+            append-to-body>
+            Are you sure to pass?
+            <span slot="footer" class="dialog-footer">
+              <el-button size="medium" type="text" @click="passDialogVisible = false">No</el-button>
+              <el-button size="medium" type="primary" @click="handlePass">Yes</el-button>
+            </span>
+          </el-dialog>
+          <span slot="footer" class="dialog-footer">
+            <el-button size="medium" type="text" @click="rejectDialogVisible = true">Reject</el-button>
+            <el-button size="medium" type="primary" @click="passDialogVisible = true">Pass</el-button>
+          </span>
+        </el-dialog>
+    </span>
+    <span slot="shop_id" slot-scope="location">{{location.postcode}}</span>
   </a-table>
         </el-main>
       </el-container>
@@ -109,20 +75,66 @@
 <script>
   import Header from '@/components/Admin/Header'
   import Sidebar from '@/components/Admin/Sidebar'
+import reqwest from 'reqwest';
+  const columns = [
+    // {
+    //   title: 'No.', //from 1-10
+    //   dataIndex: 'number', //data index in result (json)
+    //   width: '7%',
+    // },
+    {
+      title: 'Application ID',
+      dataIndex: 'phone',
+      sorter: true,
+      width: '13%',
+    },
+    {
+      title: 'Shop',
+      dataIndex: 'name',
+      sorter: true,
+      width: '10%',
+      scopedSlots: { customRender: 'name' },
+    },
+    {
+      title: 'Shop ID',
+      dataIndex: 'location',
+      sorter: true,
+      width: '10%',
+      scopedSlots: { customRender: 'shop_id'}
+    },
+    {
+      title: 'Location',
+      dataIndex: 'location', 
+      width: '15%',
+      scopedSlots: {customRender: 'location'}
+    },
+    {
+        title: 'Overview',
+        dataIndex: 'overview',
+    },
+    {
+        title: 'Action',
+        key: 'action',
+        scopedSlots: { customRender: 'action' },
+        width: '10%'
+    },
+
+  ];
 
   export default {
     name: "CloseApplication",
-    // mounted() {
-    //   this.fetch();
-    // },
+    mounted() {
+      this.fetch();
+    },
     data() {
       return {
         detailsVisible: false,
-        denyDialogVisible: false,
-        approveDialogVisible: false,
+        rejectDialogVisible: false,
+        passDialogVisible: false,
         data: [],
         pagination: {},
         loading: false,
+        columns,
       };
     },
     methods: {
@@ -130,33 +142,13 @@
         console.log(e);
         this.$message.error('Click on No');
       },
-      handleDeny(){
+      handleReject(){
         this.detailsVisible = false;
-        this.denyDialogVisible = false;
-        Vue.axios.post('/api/operateApplication', {
-          app_id: this.app_detail.application_id,
-          op_type: 'denied'
-        })
-        .then(function (response) {
-          console.log(response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
+        this.rejectDialogVisible = false;
       },
-      handleApprove(){
+      handlePass(){
         this.detailsVisible = false;
-        this.approveDialogVisible = false;
-        Vue.axios.post('/api/operateApplication', {
-          app_id: this.app_detail.application_id,
-          op_type: 'approved'
-        })
-        .then(function (response) {
-          console.log(response.data)
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
+        this.passDialogVisible = false;
       },
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
@@ -171,57 +163,27 @@
           ...filters,
         });
       },
-    handleClose(done) {
-        this.$confirm('Sure to close?')
-          .then(_ => {
-            console.log(_)
-            done();
-          })
-          .catch(_ => {
-            console.log(_)
-          });
-    },
-    viewDetails(record){
-      this.app_detail.application_id = record.application_id
-      this.app_detail.user_id = record.user_id
-      this.app_detail.shop_name = record.shop_name
-      this.app_detail.contact = record.contact
-      this.app_detail.license = record.license
-      this.app_detail.info = record.info
-      this.detailsVisible = true;
-      console.log(record)
-    },
-
-
-      // fetch(params = {}) {
-      //   console.log('params:', params);
-      //   this.loading = true;
-      //   reqwest({
-      //     url: 'https://randomuser.me/api',
-      //     method: 'get',
-      //     data: {
-      //       results: 10,
-      //       ...params,
-      //     },
-      //     type: 'json',
-      //   }).then(data => {
-      //     const pagination = { ...this.pagination };
-      //     // Read total count from server
-      //     // pagination.total = data.totalCount;
-      //     pagination.total = 200;
-      //     this.loading = false;
-      //     this.data = data.results;
-      //     this.pagination = pagination;
-      //   });
-      // },
-    },
-    created: function(){
-      Vue.axios.get('/api/getCloseApplication', {
-      }).then((response) => {
-        var data = response.data
-        this.data = data
-        console.log(data)
-      })
+      fetch(params = {}) {
+        console.log('params:', params);
+        this.loading = true;
+        reqwest({
+          url: 'https://randomuser.me/api',
+          method: 'get',
+          data: {
+            results: 10,
+            ...params,
+          },
+          type: 'json',
+        }).then(data => {
+          const pagination = { ...this.pagination };
+          // Read total count from server
+          // pagination.total = data.totalCount;
+          pagination.total = 200;
+          this.loading = false;
+          this.data = data.results;
+          this.pagination = pagination;
+        });
+      },
     },
     components: {
       Header,
