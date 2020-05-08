@@ -178,7 +178,7 @@ def api_getApplication():
             key += 1
         return Response(json.dumps(result), mimetype='application/json')
 
-@api_bp.route('getCloseApplication', methods=['GET'])
+@api_bp.route('/getCloseApplication', methods=['GET'])
 def api_getCloseApplication():
     message = Application.query.filter_by(application_type='cancel', application_status='pending').all()
     if len(message) == 0:
@@ -241,3 +241,40 @@ def api_operateApplication():
             shop.shop_status = 'cancelled'
             db.session.commit()
             return jsonify({'status': 'ok', 'info': 'cancel success'})
+
+#get user info
+@api_bp.route('/getUser', methods=['GET'])
+def api_getUser():
+    messages = User.query.all()
+    # result = [0,1]
+    if len(messages) == 0:
+        return jsonify({})
+    # return Response(json.dumps(result),mimetype='application/json')
+    else:
+        result = list()
+        key = 1
+        for user in messages:
+            temp = dict()
+            temp['key'] = key
+            temp['user_id'] = user.user_id
+            temp['user_name'] = user.user_name
+            result.append(temp)
+            key += 1
+        return Response(json.dumps(result), mimetype='application/json')
+
+#search user info
+@api_bp.route('/searchUser', methods=['GET'])
+def api_searchUser():
+    data = request.args.get('id')
+    message = User.query.get(data)
+    if message == None:
+        return jsonify({})
+    else:
+        result = list()
+        temp = dict()
+        temp['key'] = 1
+        temp['user_id'] = message.user_id
+        temp['user_name'] = message.user_name
+        result.append(temp)
+        return Response(json.dumps(result), mimetype='application/json')
+
