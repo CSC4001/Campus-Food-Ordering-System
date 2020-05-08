@@ -110,7 +110,7 @@
   import Sidebar from '@/components/Admin/Sidebar'
 
   export default {
-    name: "OpenApplication",
+    name: "UnblockApplication",
     // mounted() {
     //   this.fetch();
     // },
@@ -213,7 +213,7 @@
       // },
     },
     created: function(){
-      Vue.axios.get('/api/getOpenApplication', {
+      Vue.axios.get('/api/getUnblockApplication', {
       }).then((response) => {
         var data = response.data
         this.data = data

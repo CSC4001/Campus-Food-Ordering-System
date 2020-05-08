@@ -16,6 +16,7 @@ import Information from '@/components/Shop/Information'
 import AdminSystem from '@/components/Admin/AdminSystem'
 import CloseApplication from '@/components/Admin/CloseApplication'
 import OpenApplication from '@/components/Admin/OpenApplication'
+import UnblockApplication from '@/components/Admin/UnblockApplication'
 import UserManagement from '@/components/Admin/UserManagement'
 import ShopManagement from '@/components/Admin/ShopManagement'
 import AdminOrderManagement from '@/components/Admin/OrderManagement'
@@ -86,6 +87,11 @@ export default new Router({
             path: '/admin/openapplication',
             name: 'OpenApplication',
             component: OpenApplication
+        },
+        {
+            path: '/admin/unblockapplication',
+            name: 'UnblockApplication',
+            component: UnblockApplication
         },
         {
             path: '/admin/usermanagement',

@@ -18,6 +18,12 @@
             <span slot="title">Close Shop Application</span>
           </el-menu-item>
         </router-link>
+        <router-link to="/admin/unblockapplication">
+          <el-menu-item index="3">
+            <i class="el-icon-menu"></i>
+            <span slot="title">Unblock Shop Application</span>
+          </el-menu-item>
+        </router-link>
         </el-menu>
       </el-col>
     </el-row>

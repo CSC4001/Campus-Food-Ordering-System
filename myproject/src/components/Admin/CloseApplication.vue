@@ -48,8 +48,6 @@
         <span>
           <el-button type="text" @click="viewDetails(record)"> details</el-button>
           <el-dialog
-
-            :before-close="handleClose"
             :visible.sync="detailsVisible"
             width="30%"
             center>
@@ -182,16 +180,6 @@
           ...filters,
         });
       },
-    handleClose(done) {
-        this.$confirm('Sure to close?')
-          .then(_ => {
-            console.log(_)
-            done();
-          })
-          .catch(_ => {
-            console.log(_)
-          });
-    },
     viewDetails(record){
       this.app_detail.application_id = record.application_id
       this.app_detail.user_id = record.user_id
