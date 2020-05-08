@@ -16,15 +16,16 @@
               v-if="shopList.length"
               :dataSource="shopList"
               :header="`${shopList.length} ${shopList.length > 1 ? 'shops' : 'shop'}`"
-              itemLayout="horizontal"
+              itemLayout="vertical"
             >
               <a-list-item slot="renderItem" slot-scope="item">
-                <a-list-item-meta
-                  :description = "item.shop_info"
+                <a-list-item-meta style='word-wrap:break-word;'
+                  :description = "item.shop_status"
                 >
-                  <a slot="title" @click="handleShopURL(item.shop_id)">{{ item.shop_name }}</a>
+                  <span slot="title" @click="handleShopURL(item.shop_id)">{{ item.shop_name }}</span>
                 </a-list-item-meta>
-                <div>Status: {{ item.shop_status }}</div>
+                <p style='word-wrap:break-word;'>{{item.shop_info}}</p>
+                
               </a-list-item>
             </a-list>
             <!-- Apply form for shop-->
