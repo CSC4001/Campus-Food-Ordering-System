@@ -110,26 +110,50 @@ def register_commands(app):
         location = ['Student Center', 'Shaw College', 'Muse College', 'Deligentia College', 'Harmonia College',
         'Le Tian Building', 'Zhi Ren Building', 'Zhi Xin Building', 'Research A', 'Research B',
         'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D']
-        # for i in range(count):
-        #     #with open('static/favicon.ico','rb') as img:
-        #     #   img=base64.b64encode(img.read())
-        #     shop_message = Shop(
-        #         # user_id = str(fake.random_number(20)),
-        #         shop_name = fake.company(),
-        #         shop_info = fake.paragraph(3),
-        #         shop_delivery_fee = fake.random_int(min=0,max=5),
-        #         shop_rate = fake.random_int(),
-        #         shop_rate_number = fake.random_int(),
-        #         shop_balance = fake.random_number(),
-        #         shop_contact = fake.phone_number(),
-        #         shop_location = random.choice(location),
-        #         shop_location_detail = fake.address(),
-        #         shop_license_number = str(fake.random_number(32)),
-        #         shop_status = random.choice(status),
-        #         # add avatar at the last step
-        #         #shop_avatar = img
-        #     )
-        #     db.session.add(shop_message)
+        for i in range(4*count):
+            user_message = User(
+                email = fake.ascii_email(),
+                user_password = fake.password(length=12),
+                user_name = fake.name(),
+                user_contact = fake.phone_number(),
+                available_balance = fake.random_int(),
+                frozen_balance = 0,
+                user_status = 'normal',
+            )
+            db.session.add(user_message)
+
+        for i in range(count):
+            #with open('static/favicon.ico','rb') as img:
+            #   img=base64.b64encode(img.read())
+            shop_message = Shop(
+                user_id = fake.random_int(min=2, max=2*count),
+                shop_name = fake.company(),
+                shop_info = fake.paragraph(3),
+                shop_delivery_fee = fake.random_int(min=0,max=5),
+                shop_rate_total = fake.random_int(),
+                shop_rate_number = fake.random_int(),
+                shop_balance = fake.random_number(),
+                shop_contact = fake.phone_number(),
+                shop_location = random.choice(location),
+                shop_location_detail = fake.address(),
+                shop_license_number = str(fake.random_number(32)),
+                shop_status = random.choice(status),
+                # add avatar at the last step
+                #shop_avatar = img
+            )
+            db.session.add(shop_message)
+            for i in range(2*count):
+                product_message = Product(
+                    product_name = fake.word(),
+                    # product_avatar =
+                    product_info = fake.sentence(),
+                    product_price = fake.random_int(min=1, max=30),
+                    total_sale = fake.random_int()
+                )
+                db.session.add(product_message)
+                product_message.shop = shop_message
+
+            
 
         # generate a user
         user = User(

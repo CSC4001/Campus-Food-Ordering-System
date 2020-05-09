@@ -20,6 +20,8 @@ import UnblockApplication from '@/components/Admin/UnblockApplication'
 import UserManagement from '@/components/Admin/UserManagement'
 import ShopManagement from '@/components/Admin/ShopManagement'
 import AdminOrderManagement from '@/components/Admin/OrderManagement'
+// order
+import Shop from '@/components/Order/Shop'
 // import Sidebar from '@/components/Sidebar'
 // import Content from '@/components/Content'
 // import Header from '@/components/Header'
@@ -52,6 +54,11 @@ export default new Router({
             path: '/myshop',
             name: 'MyShop',
             component: MyShop
+        },
+        {
+            path: '/shops/:shopid',
+            name: 'Shops',
+            component: Shop
         },
         {
             path: '/shopsystem/',

@@ -482,3 +482,4 @@ def change_order_status():
     db.session.commit()
     response_object["message"] = "Successfully updating status!"
     return jsonify(data=response_object)
+
