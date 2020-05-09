@@ -436,8 +436,6 @@ def api_getCloseApplication():
             temp['user_id'] = application.user_id
             temp['shop_id'] = application.shop_id
             temp['shop_name'] = application.shop_name
-            # temp['contact'] = application.shop_contact
-            # temp['location'] = application.shop_location
             temp['license'] = application.shop_license_number
             temp['info'] = application.shop_info
             result.append(temp)
@@ -459,10 +457,7 @@ def api_getUnblockApplication():
             temp['user_id'] = application.user_id
             temp['shop_id'] = application.shop_id
             temp['shop_name'] = application.shop_name
-            # temp['contact'] = application.shop_contact
-            # temp['location'] = application.shop_location
             temp['license'] = application.shop_license_number
-            temp['info'] = application.shop_info
             result.append(temp)
             key += 1
         return Response(json.dumps(result), mimetype='application/json')
@@ -470,13 +465,11 @@ def api_getUnblockApplication():
 #application operation
 @api_bp.route('/operateApplication', methods=['POST'])
 def api_operateApplication():
-    # app_id = request.args.get(app_id)
     data = request.get_json()
     op_type = data['op_type']
     app_id = data['app_id']
     application = Application.query.get(app_id)
     if op_type == 'denied' :
-        # application.application_status = 'denied'
         db.session.commit()
         return jsonify({
             'status': 'ok',
@@ -499,8 +492,6 @@ def api_operateApplication():
             shop_location=shop_location, shop_location_detail=shop_location_detail,
             shop_license_number=shop_license, shop_status='open',)
             db.session.add(shop)
-            # db.add(shop)
-            # db.commit()
             db.session.commit()
             return jsonify({'status': 'ok', 'info':'approve success'})
         if app_type == 'cancel':
@@ -509,15 +500,19 @@ def api_operateApplication():
             shop.shop_status = 'cancelled'
             db.session.commit()
             return jsonify({'status': 'ok', 'info': 'cancel success'})
+        if app_type == 'unblock':
+            shop_id = application.shop_id
+            shop = Shop.query.get(shop_id) 
+            shop.shop_status = 'open'
+            db.session.commit()
+            return jsonify({'status': 'ok', 'info': 'unblock success'})
 
 #get user info
 @api_bp.route('/getUser', methods=['GET'])
 def api_getUser():
     messages = User.query.all()
-    # result = [0,1]
     if len(messages) == 0:
         return jsonify({})
-    # return Response(json.dumps(result),mimetype='application/json')
     else:
         result = list()
         key = 1
@@ -606,3 +601,81 @@ def api_unblockShop():
     db.session.commit()
     return jsonify({'status': 'ok', 'info': 'unblock success'})
 
+#get order info
+@api_bp.route('/getAllOrder', methods=['GET'])
+def api_getOrder():
+    result = list()
+    temp = dict()
+    temp['key'] = 1
+    temp['order_id'] = 1
+    temp['user_id'] = 1
+    temp['shop_id'] = 1
+    purchased_products = list()
+    purchased_products.append(('dishes1',1))
+    purchased_products.append(('dishes2',1))
+    temp['purchased_products'] = purchased_products
+    temp['user_contact'] = '12345678901'
+    temp['user_location'] = 'order.user_location'
+    temp['delivery_fee'] = 1
+    temp['create_time'] = "yyyy-mm-dd h:m:s"
+    temp['order_status'] = 'pending'
+    result.append(temp)
+    return Response(json.dumps(result), mimetype='application/json')
+
+
+    # messages = Order.query.all()
+    # if len(messages) == 0:
+    #     return jsonify({})
+    # else:
+        # result = list()
+        # key = 1
+        # for order in messages:
+        #     temp = dict()
+        #     temp['key'] = key
+        #     temp['order_id'] = order.order_id
+        #     temp['user_id'] = order.user_id
+        #     temp['shop_id'] = order.shop_id
+        #     purchased_products = list()
+        #     products = Purchased_Product.query.filter_by(order_id=order.order_id)
+        #     for product in products:
+        #         product_name = product.product_name
+        #         product_quantity = product.product_quantity
+        #         purchased_products.append((product_name,product_quantity))
+        #     temp['purchased_products'] = purchased_products
+        #     temp['user_contact'] = order.user_contact
+        #     temp['user_location'] = order.user_location
+        #     temp['delivery_fee'] = order.delivery_fee
+        #     temp['create_time'] = order.create_time
+        #     temp['order_status'] = order.order_status
+        #     result.append(temp)
+        #     key += 1
+    #     return Response(json.dumps(result), mimetype='application/json')
+
+#search order info
+@api_bp.route('/searchOrder', methods=['GET'])
+def api_searchOrder():
+    data = request.args.get('id')
+    message = Order.query.get(data)
+    if message == None:
+        return jsonify({})
+    else:
+        result = list()
+        temp = dict()
+        temp['key'] = 1
+        temp['order_id'] = message.order_id
+        temp['user_id'] = message.user_id
+        temp['shop_id'] = message.shop_id
+        purchased_products = list()
+        products = Purchased_Product.query.filter_by(order_id=message.order_id)
+        for product in products:
+            product_name = product.product_name
+            product_quantity = product.product_quantity
+            purchased_products.append((product_name,product_quantity))
+        temp['purchased_products'] = purchased_products
+        temp['user_contact'] = message.user_contact
+        temp['user_location'] = message.user_location
+        temp['delivery_fee'] = message.delivery_fee
+        temp['create_time'] = message.create_time
+        temp['order_status'] = message.order_status
+        result.append(temp)
+        return Response(json.dumps(result), mimetype='application/json')

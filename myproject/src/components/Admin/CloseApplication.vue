@@ -10,8 +10,6 @@
         </el-aside>
         <el-main>
           <a-table
-
-
     :dataSource="data"
     :pagination="pagination"
     :loading="loading"
@@ -19,30 +17,15 @@
     size="middle"
   >
     <a-table-column key="application_id" title="Application ID" >
-    <template slot-scope="record">
-      <span> {{record.application_id}} </span>
-    </template>
-  </a-table-column>
-  <a-table-column key="shop_name" title="Shop">
-    <template slot-scope="record">
-      <span> {{record.shop_name}}</span>
-    </template>
-  </a-table-column>
-  <!-- <a-table-column key="contact" title="Contact">
-    <template slot-scope="record">
-      <span> {{record.contact}}</span>
-    </template>
-  </a-table-column>
-  <a-table-column key="location" title="Location">
-    <template slot-scope="record">
-      <span>{{record.location}}</span>
-    </template>
-  </a-table-column>
-  <a-table-column key="info" title="Overview">
-    <template slot-scope="record">
-      <span>{{record.info}}</span>
-    </template>
-  </a-table-column> -->
+      <template slot-scope="record">
+        <span> {{record.application_id}} </span>
+      </template>
+    </a-table-column>
+    <a-table-column key="shop_name" title="Shop">
+      <template slot-scope="record">
+        <span> {{record.shop_name}}</span>
+      </template>
+    </a-table-column>
     <a-table-column key="action" title="Action">
       <template slot-scope="record">
         <span>
@@ -57,16 +40,8 @@
             <br>
             <span>Shop:</span><span> {{app_detail.shop_name}} </span>
             <br>
-            <!-- <span>Location:</span><span> {{app_detail.location}} </span>
-            <br>
-            <span>Contact:</span><span> {{app_detail.contact}} </span>
-            <br> -->
             <span>License:</span><span> {{app_detail.license}} </span>
             <br>
-            <!-- <span>Relevant Information</span>
-            <div>
-              {{app_detail.info}}
-            </div> -->
             <!-- deny confirm -->
             <el-dialog
               width="30%"

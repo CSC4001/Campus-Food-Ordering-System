@@ -28,21 +28,21 @@
       <span> {{record.shop_name}}</span>
     </template>
   </a-table-column>
-  <a-table-column key="contact" title="Contact">
+  <a-table-column key="shop_id" title="Shop ID">
     <template slot-scope="record">
-      <span> {{record.contact}}</span>
+      <span> {{record.shop_id}}</span>
     </template>
   </a-table-column>
-  <a-table-column key="location" title="Location">
+  <a-table-column key="user_id" title="User ID">
     <template slot-scope="record">
-      <span>{{record.location}}</span>
+      <span>{{record.user_id}}</span>
     </template>
   </a-table-column>
-  <a-table-column key="info" title="Overview">
+  <!-- <a-table-column key="info" title="Overview">
     <template slot-scope="record">
       <span>{{record.info}}</span>
     </template>
-  </a-table-column>
+  </a-table-column> -->
     <a-table-column key="action" title="Action">
       <template slot-scope="record">
         <span>
@@ -51,22 +51,16 @@
             :visible.sync="detailsVisible"
             width="30%"
             center>
-            <span>ID:</span><span> {{app_detail.application_id}} </span>
+            <span>Application ID:</span><span> {{app_detail.application_id}} </span>
+            <br>
+            <span>Shop ID:</span><span> {{app_detail.shop_id}}</span>
             <br>
             <span>User ID:</span><span> {{app_detail.user_id}}</span>
             <br>
             <span>Shop:</span><span> {{app_detail.shop_name}} </span>
             <br>
-            <span>Location:</span><span> {{app_detail.location}} </span>
-            <br>
-            <span>Contact:</span><span> {{app_detail.contact}} </span>
-            <br>
             <span>License:</span><span> {{app_detail.license}} </span>
             <br>
-            <span>Relevant Information</span>
-            <div>
-              {{app_detail.info}}
-            </div>
             <!-- deny confirm -->
             <el-dialog
               width="30%"
@@ -122,12 +116,10 @@
         data: [],
         app_detail: {
           application_id: '',
-          user_id: '',
           shop_name: '',
-          contact: '',
-          location: '',
+          shop_id: '',
+          user_id: '',
           license: '',
-          info: '',
         },
         pagination: {},
         loading: false,
@@ -181,11 +173,10 @@
       },
     viewDetails(record){
       this.app_detail.application_id = record.application_id
+      this.app_detail.shop_id = record.shop_id
       this.app_detail.user_id = record.user_id
       this.app_detail.shop_name = record.shop_name
-      this.app_detail.contact = record.contact
       this.app_detail.license = record.license
-      this.app_detail.info = record.info
       this.detailsVisible = true;
       console.log(record)
     },
