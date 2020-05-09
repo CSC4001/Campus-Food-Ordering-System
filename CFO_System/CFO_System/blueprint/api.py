@@ -428,10 +428,7 @@ def api_getUnblockApplication():
             temp['user_id'] = application.user_id
             temp['shop_id'] = application.shop_id
             temp['shop_name'] = application.shop_name
-            # temp['contact'] = application.shop_contact
-            # temp['location'] = application.shop_location
             temp['license'] = application.shop_license_number
-            temp['info'] = application.shop_info
             result.append(temp)
             key += 1
         return Response(json.dumps(result), mimetype='application/json')
@@ -478,6 +475,12 @@ def api_operateApplication():
             shop.shop_status = 'cancelled'
             db.session.commit()
             return jsonify({'status': 'ok', 'info': 'cancel success'})
+        if app_type == 'unblock':
+            shop_id = application.shop_id
+            shop = Shop.query.get(shop_id) 
+            shop.shop_status = 'open'
+            db.session.commit()
+            return jsonify({'status': 'ok', 'info': 'unblock success'})
 
 #get user info
 @api_bp.route('/getUser', methods=['GET'])
