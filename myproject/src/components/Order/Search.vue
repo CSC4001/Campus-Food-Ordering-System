@@ -9,20 +9,39 @@
           <Sidebar/> <!-- Fixed Sidebar-->
         </el-aside>
         <el-main>
-          <!--h3>{{shopData.name}}</h3-->
-          <h1>Name</h1>
-          <el-col :span='2'>
-            <p>ID:</p>
-          </el-col>
-          <el-col :span='2'>
-            <el-button type="text" @click="favourite()">Favoutite</el-button>
-          </el-col>  
-          <el-col>
-            <el-row>
-              <el-col :span="10"></el-col>
-
-              <el-col :span="10"></el-col>
-            </el-row>
+          <h3>Search Result for {{searchType}}: {{searchKey}}</h3>
+          <el-col :span="10">
+            <a-list
+              v-if="searchType=='shop'"
+              :dataSource="shopData"
+              :header="`${shopData.length} ${shopData.length > 1 ? 'results' : 'result'}`"
+              itemLayout="vertical"
+            >
+              <a-list-item slot="renderItem" slot-scope="item">
+                <a-list-item-meta style='word-wrap:break-word;'
+                  :description = "item.shop_info"
+                >
+                  <span slot="title" @click="handleShopURL(item.shop_id)">{{ item.shop_name }}</span>
+                </a-list-item-meta>
+                <p style='word-wrap:break-word;'>{{item.shop_info}}</p>
+                
+              </a-list-item>
+            </a-list>
+            <a-list
+              v-if="searchType=='dishes'"
+              :dataSource="shopData"
+              :header="`${shopData.length} ${shopData.length > 1 ? 'results' : 'result'}`"
+              itemLayout="vertical"
+            >
+              <a-list-item slot="renderItem" slot-scope="item">
+                <a-list-item-meta style='word-wrap:break-word;'
+                  :description = "item.product_info"
+                >
+                  <span slot="title" @click="handleShopURL(item.shop_id)">{{ item.product_name }}</span>
+                </a-list-item-meta>
+                <p style='word-wrap:break-word;'>{{item.peoduct_info}}</p>
+              </a-list-item>
+            </a-list>
           </el-col>
         </el-main>
       </el-container>
@@ -44,15 +63,17 @@ export default {
     }
   },
   methods: {
-    
+    handleShopURL(id){
+      this.$router.push({path:`/shops/${id}`}).catch(err => {err})
+    }
   },
   created() {
     this.searchKey = this.$route.params.searchKey
     this.searchType = this.$route.params.searchType
-    Vue.axios.get('/api/getDishes', {
+    Vue.axios.get('/api/getSearch', {
       params: {
-        searchKey: searchKey,
-        searchType: searchType
+        'searchKey': this.searchKey,
+        'searchType': this.searchType
       }
     }).then((response) => {
       var data = response.data

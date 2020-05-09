@@ -120,7 +120,7 @@
         });
       },
       onSubmit() {
-        console.log('submit!');
+        this.$router.push({path:`/search/${this.formSearch.searchtype}/${this.formSearch.searchkey}`}).catch(err => {err})
       },
       gotoShop(refName){
         var index = this.$refs[refName].activeIndex
