@@ -424,6 +424,44 @@ def api_getSearch():
             result.append(a)
         return Response(json.dumps(result),  mimetype='application/json')
 
+@api_bp.route('/order_management',methods=['GET','POST'])
+def shop_orders():
+    response_object = {"list":list()}
+    if request.method == 'GET':
+        shop_id = request.args.get("shop_id")
+        orders = Order.query.filter_by(shop_id=shop_id).order_by(Order.create_time.desc()).all()
+        # if orders == None:
+        #     return jsonify(message=("Orders empty.")), 400
+        for order in orders:
+            info = {
+                "order_id":order.order_id,
+                "shop_name" : Shop.query.filter_by(shop_id=order.shop_id).first().shop_name,
+                "user_id" : order.user_id,
+                "user_location" : order.user_location,
+                "user_contact": order.user_contact,
+                "delivery_fee" : order.delivery_fee,
+                "create_time": order.create_time,
+                "order_status": order.order_status
+            }
+            response_object['list'].append(info)
+        return jsonify(data=response_object)
+
+@api_bp.route('/order_detail',methods=['GET','POST'])
+def shop_order_detail():
+    response_object = {"list":list()}
+    if request.method == 'GET':
+        order_id = request.args.get("order_id")
+        products = Purchased_Product.query.filter_by(order_id=order_id).all()
+        if products == None:
+            return jsonify(message=("Request id do not exist.")), 404
+        for product in products:
+            info = dict()
+            info["product_name"] = product.product_name
+            info["product_price"] = product.product_price
+            info["quantity"] = product.quantity
+            response_object['list'].append(info)
+        return jsonify(data=response_object)
+
 #API for admin
 #provide admin application
 @api_bp.route('/getOpenApplication', methods=['GET'])

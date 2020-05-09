@@ -22,9 +22,7 @@
                   :description = "item.shop_info"
                 >
                   <span slot="title" @click="handleShopURL(item.shop_id)">{{ item.shop_name }}</span>
-                </a-list-item-meta>
-                <p style='word-wrap:break-word;'>{{item.shop_info}}</p>
-                
+                </a-list-item-meta>        
               </a-list-item>
             </a-list>
             <a-list
@@ -39,7 +37,6 @@
                 >
                   <span slot="title" @click="handleShopURL(item.shop_id)">{{ item.product_name }}</span>
                 </a-list-item-meta>
-                <p style='word-wrap:break-word;'>{{item.peoduct_info}}</p>
               </a-list-item>
             </a-list>
           </el-col>
