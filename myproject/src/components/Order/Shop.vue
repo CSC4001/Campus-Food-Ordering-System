@@ -100,6 +100,7 @@ for (let i = 0; i < 23; i++) {
 }
 
 export default {
+  name: 'Shop',
   data() {
     return {
       shop_info: {
