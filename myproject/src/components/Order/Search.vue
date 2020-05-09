@@ -31,22 +31,33 @@
 </template>
 
 <script>
-// import Vue from 'vue'
+import Vue from 'vue'
 import Sidebar from '@/components/UserInterface/Sidebar'
 import Header from '@/components/UserInterface/Header'
 
 export default {
-  name: 'Shop',
+  name:'Search',
   data() {
     return {
-      
+      searchKey: '',
+      shopData: [],
     }
   },
   methods: {
     
   },
   created() {
-    
+    this.searchKey = this.$route.params.searchKey
+    this.searchType = this.$route.params.searchType
+    Vue.axios.get('/api/getDishes', {
+      params: {
+        searchKey: searchKey,
+        searchType: searchType
+      }
+    }).then((response) => {
+      var data = response.data
+      this.shopData = data
+    })
   },
   components: {
     Header,

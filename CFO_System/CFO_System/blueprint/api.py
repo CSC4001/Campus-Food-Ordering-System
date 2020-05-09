@@ -364,6 +364,37 @@ def deleteDish():
         'status': 'ok'
     })
 
+# home page get highest rate shops
+@api_bp.route('/getRatedShops', methods=['GET'])
+def api_getRatedShops():
+    shops = Shop.query.order_by(Shop.shop_rate_total).limit(6).all()
+    result = list()
+    for shop in shops:
+        a = dict()
+        a['shop_id'] = shop.shop_id
+        a['shop_name'] = shop.shop_name
+        a['shop_info'] = shop.shop_info
+        a['shop_rate_total'] = shop.shop_rate_total
+        a['shop_rate_number'] = shop.shop_rate_number
+        result.append(a)
+    return Response(json.dumps(result),  mimetype='application/json')
+
+# home page get highest rate dishes
+@api_bp.route('/getRatedDishes', methods=['GET'])
+def api_getRatedDishes():
+    dishes = Product.query.order_by(Product.total_sale.desc()).limit(12).all()
+    result = list()
+    for dish in dishes:
+        a = dict()
+        a['product_id'] = dish.product_id
+        a['shop_id'] = dish.shop_id
+        a['product_name'] = dish.product_name
+        a['product_info'] = dish.product_info
+        a['total_sale'] = dish.total_sale
+        result.append(a)
+    return Response(json.dumps(result),  mimetype='application/json')
+
+
 
 #API for admin
 #provide admin application
