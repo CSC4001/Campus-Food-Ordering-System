@@ -441,6 +441,46 @@ def api_getSearch():
             else: continue
         return Response(json.dumps(result),  mimetype='application/json')
 
+# set favourite for user to shop
+# Vue.axios.get('/api/setFavourite',{
+#   params: {
+#     'user_id': ...,
+#     'shop_id': ...
+#   }
+# })
+@api_bp.route('/setFavourite', methods=['GET'])
+def api_setFavourite():
+    user_id = request.args.get('user_id')
+    shop_id = request.args.get('shop_id')
+    bookmark = Bookmark(user_id=user_id, shop_id=shop_id).all()
+    db.session.add(bookmark)
+    db.session.commit()
+    return jsonify({
+        'status': 'ok'
+    })
+
+# get favourite for user to shop
+# Vue.axios.get('/api/getFavourite',{
+#   params: {
+#     'user_id': ...,
+#   }
+# })
+@api_bp.route('/getFavourite', methods=['GET'])
+def api_getFavourite():
+    user_id = request.args.get('user_id')
+    bookmarks = Bookmark.query.filter_by(user_id=user_id)
+    result = list()
+    for bookmark in bookmarks:
+        shop = Shop.query.filter_by(shop_id=shop_id)
+        a = dict()
+        a['user_id'] = userid
+        a['shop_id'] = shop.shop_id
+        a['shop_name'] = shop.shop_name
+        a['shop_info'] = shop.shop_info
+        a['shop_status'] = shop.shop_status
+        result.append(a)
+    return Response(json.dumps(result),  mimetype='application/json')
+
 @api_bp.route('/order_management',methods=['GET','POST'])
 def shop_orders():
     response_object = {"list":list()}
