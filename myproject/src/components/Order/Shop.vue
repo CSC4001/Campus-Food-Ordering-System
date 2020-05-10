@@ -191,7 +191,7 @@ export default {
         onChange: page => {
           console.log(page);
         },
-        pageSize: 4,
+        pageSize: 3,
       },
       direction: "rtl",
       drawer: false,
@@ -356,6 +356,12 @@ export default {
   components: {
     Header,
     Sidebar,
+  },
+  watch :{
+    '$route': function (to, from) {
+      this.$router.go(0)
+      console.log(to, from)
+    }
   }
 }
 </script>

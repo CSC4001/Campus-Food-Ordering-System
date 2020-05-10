@@ -104,12 +104,50 @@ def register_commands(app):
         db.drop_all()
         db.create_all()
 
-        fake = Faker(locale='zh_CN')
+        fake = Faker(locale='en_US')
         click.echo('Working...')
         status = ['open', 'closed', 'blocked', 'cancelled']
         location = ['Student Center', 'Shaw College', 'Muse College', 'Deligentia College', 'Harmonia College',
         'Le Tian Building', 'Zhi Ren Building', 'Zhi Xin Building', 'Research A', 'Research B',
         'Teaching A', 'Teaching B', 'Teaching C', 'Teaching D']
+        # generate a user
+        user = User(
+                    user_status = 'normal',
+                    user_name="pony",
+                    email="pony@qq.com")
+        user.set_password('12345678')
+        db.session.add(user)
+
+        # creating a shop and product
+        shopNameList=['Deligentia Canteen', 'Shaw Canteen', 'Student Center', 'Letian Canteen']
+        for shopName in shopNameList:
+            shop_message = Shop(
+                # user_id = str(fake.random_number(20)),
+                shop_name = shopName,
+                shop_info = shopName,
+                shop_delivery_fee = fake.random_int(min=0,max=5),
+                shop_rate_total = fake.random_int(),
+                shop_rate_number = fake.random_int(),
+                shop_balance = fake.random_number(),
+                shop_contact = fake.phone_number(),
+                shop_location = 'Student Center',
+                shop_location_detail = "学生活动中心一楼潘多拉美食广场",
+                shop_license_number = str(fake.random_number(32)),
+                shop_status = 'open',
+                # add avatar at the last step
+                #shop_avatar = img
+            )
+            db.session.add(shop_message)
+            product_message = Product(
+                product_name = "兰小花牛肉面",
+                # product_avatar =
+                product_info = "一碗牛肉面",
+                product_price = 14,
+                total_sale = 100
+            )
+            db.session.add(product_message)
+            product_message.shop = shop_message
+            shop_message.user = user
         for i in range(4*count):
             user_message = User(
                 email = fake.ascii_email(),
@@ -152,45 +190,6 @@ def register_commands(app):
                 )
                 db.session.add(product_message)
                 product_message.shop = shop_message
-
-            
-
-        # generate a user
-        user = User(
-                    user_status = 'normal',
-                    user_name="pony",
-                    email="pony@qq.com")
-        user.set_password('12345678')
-        db.session.add(user)
-
-        # creating a shop and product
-        shop_message = Shop(
-            # user_id = str(fake.random_number(20)),
-            shop_name = "兰小花",
-            shop_info = "卖牛肉面的",
-            shop_delivery_fee = fake.random_int(min=0,max=5),
-            shop_rate_total = fake.random_int(),
-            shop_rate_number = fake.random_int(),
-            shop_balance = fake.random_number(),
-            shop_contact = fake.phone_number(),
-            shop_location = 'Student Center',
-            shop_location_detail = "学生活动中心一楼潘多拉美食广场",
-            shop_license_number = str(fake.random_number(32)),
-            shop_status = 'open',
-            # add avatar at the last step
-            #shop_avatar = img
-        )
-        db.session.add(shop_message)
-        product_message = Product(
-            product_name = "兰小花牛肉面",
-            # product_avatar =
-            product_info = "一碗牛肉面",
-            product_price = 14,
-            total_sale = 100
-        )
-        db.session.add(product_message)
-        product_message.shop = shop_message
-        shop_message.user = user
 
         # creating administrator
         admin = Administrator.query.first()

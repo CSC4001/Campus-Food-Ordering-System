@@ -96,7 +96,7 @@
     data() {
       return {
         formSearch: {
-          searchtype: '',
+          searchtype: 'Shop',
           searchkey: '',
         },
         shopData: [],

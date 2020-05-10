@@ -25,7 +25,7 @@ class Shop(db.Model):
     shop_delivery_fee = db.Column(db.Integer, default=0)
     shop_rate_total = db.Column(db.Integer)
     shop_rate_number = db.Column(db.Integer)
-    shop_balance = db.Column(db.Float)
+    shop_balance = db.Column(db.Float, default=0)
     shop_contact = db.Column(db.String(11))
     shop_location = db.Column(db.String(32))
     shop_location_detail = db.Column(db.Text(256))
@@ -138,7 +138,7 @@ class Order(db.Model):
 
 class Purchased_Product(db.Model):
     __tablename__ = 'purchased_products'
-    product_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    product_id = db.Column(db.Integer, primary_key=True, nullable=False, index=True)
     order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), primary_key=True, nullable=False, index=True)
     product_name = db.Column(db.String(32), nullable=False)
     product_price = db.Column(db.Float, nullable=False)

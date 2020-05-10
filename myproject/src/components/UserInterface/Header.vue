@@ -2,10 +2,10 @@
 <div class = "header" style="height:100%;">
     <el-menu :default-active="activeIndex" mode="horizontal" justify="start" align="middle" @select="handleSelect">
         <el-menu-item index="1"><router-link to="/">Front Page</router-link></el-menu-item>
-        <el-menu-item index="2">Diligentia College</el-menu-item>
-        <el-menu-item index="3">Shaw College</el-menu-item>
-        <el-menu-item index="4">Student Centre</el-menu-item>
-        <el-menu-item index="5">LeTian Building</el-menu-item>
+        <el-menu-item index="2"><router-link to="/shops/1">Diligentia College</router-link></el-menu-item>
+        <el-menu-item index="3"><router-link to="/shops/2">Shaw College</router-link></el-menu-item>
+        <el-menu-item index="4"><router-link to="/shops/3">Student Centre</router-link></el-menu-item>
+        <el-menu-item index="5"><router-link to="/shops/4">LeTian Building</router-link></el-menu-item>
         <el-button @click="logout" style="margin-top:10px">Log out</el-button>
     </el-menu>
 </div>

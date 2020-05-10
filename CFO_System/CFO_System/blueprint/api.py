@@ -159,7 +159,6 @@ def api_submitShopApply():
 def api_getShopIndex():
     user_id = request.args.get('user_id')
     shop_id = request.args.get('shop_id')
-    print(type(user_id), type(shop_id))
     shop = Shop.query.filter_by(shop_id=shop_id, user_id=user_id).first_or_404()
     if shop is None:
         return jsonify({
@@ -243,7 +242,8 @@ def api_getShopInfo():
         'location': shop.shop_location,
         'locationDetail': shop.shop_location_detail,
         'shopStatus': shop.shop_status,
-        'licenseNum':shop.shop_license_number
+        'licenseNum':shop.shop_license_number,
+        'balance': shop.shop_balance
     })
 
 # submit shop info form
@@ -368,31 +368,42 @@ def deleteDish():
 # home page get highest rate shops
 @api_bp.route('/getRatedShops', methods=['GET'])
 def api_getRatedShops():
-    shops = Shop.query.order_by(Shop.shop_rate_total.desc()).limit(6).all()
+    shops = Shop.query.order_by(Shop.shop_rate_total.desc()).all()
     result = list()
+    i = 0
     for shop in shops:
-        a = dict()
-        a['shop_id'] = shop.shop_id
-        a['shop_name'] = shop.shop_name
-        a['shop_info'] = shop.shop_info
-        a['shop_rate_total'] = shop.shop_rate_total
-        a['shop_rate_number'] = shop.shop_rate_number
-        result.append(a)
+        if shop.shop_status == 'open':
+            i += 1
+            a = dict()
+            a['shop_id'] = shop.shop_id
+            a['shop_name'] = shop.shop_name
+            a['shop_info'] = shop.shop_info
+            a['shop_rate_total'] = shop.shop_rate_total
+            a['shop_rate_number'] = shop.shop_rate_number
+            result.append(a)
+            if i == 6: break
+        else: continue
     return Response(json.dumps(result),  mimetype='application/json')
 
 # home page get highest rate dishes
 @api_bp.route('/getRatedDishes', methods=['GET'])
 def api_getRatedDishes():
-    dishes = Product.query.order_by(Product.total_sale.desc()).limit(12).all()
+    dishes = Product.query.order_by(Product.total_sale.desc()).all()
     result = list()
+    i = 0
     for dish in dishes:
-        a = dict()
-        a['product_id'] = dish.product_id
-        a['shop_id'] = dish.shop_id
-        a['product_name'] = dish.product_name
-        a['product_info'] = dish.product_info
-        a['total_sale'] = dish.total_sale
-        result.append(a)
+        shop = Shop.query.filter_by(shop_id=dish.shop_id).first()
+        if shop.shop_status == 'open':
+            i += 1
+            a = dict()
+            a['product_id'] = dish.product_id
+            a['shop_id'] = dish.shop_id
+            a['product_name'] = dish.product_name
+            a['product_info'] = dish.product_info
+            a['total_sale'] = dish.total_sale
+            result.append(a)
+            if i == 12: break
+        else: continue
     return Response(json.dumps(result),  mimetype='application/json')
 
 # get search result by given shop/dish
@@ -404,25 +415,30 @@ def api_getSearch():
         shops = Shop.query.filter(Shop.shop_name.like('%' + searchKey + '%')if searchKey is not None else "").all()
         result = list()
         for shop in shops:
-            a = dict()
-            a['shop_id'] = shop.shop_id
-            a['shop_name'] = shop.shop_name
-            a['shop_info'] = shop.shop_info
-            a['shop_rate_total'] = shop.shop_rate_total
-            a['shop_rate_number'] = shop.shop_rate_number
-            result.append(a)
+            if shop.status == 'open':
+                a = dict()
+                a['shop_id'] = shop.shop_id
+                a['shop_name'] = shop.shop_name
+                a['shop_info'] = shop.shop_info
+                a['shop_rate_total'] = shop.shop_rate_total
+                a['shop_rate_number'] = shop.shop_rate_number
+                result.append(a)
+            else: continue
         return Response(json.dumps(result),  mimetype='application/json')
     elif searchType == 'dishes':
         dishes = Product.query.filter(Product.product_name.like('%' + searchKey + '%') if searchKey is not None else "").all()
         result = list()
         for dish in dishes:
-            a = dict()
-            a['product_id'] = dish.product_id
-            a['shop_id'] = dish.shop_id
-            a['product_name'] = dish.product_name
-            a['product_info'] = dish.product_info
-            a['total_sale'] = dish.total_sale
-            result.append(a)
+            shop = Shop.query.filter_by(shop_id=dish.shop_id)
+            if shop.shop_status == 'open':
+                a = dict()
+                a['product_id'] = dish.product_id
+                a['shop_id'] = dish.shop_id
+                a['product_name'] = dish.product_name
+                a['product_info'] = dish.product_info
+                a['total_sale'] = dish.total_sale
+                result.append(a)
+            else: continue
         return Response(json.dumps(result),  mimetype='application/json')
 
 @api_bp.route('/order_management',methods=['GET','POST'])
@@ -433,8 +449,10 @@ def shop_orders():
         orders = Order.query.filter_by(shop_id=shop_id).order_by(Order.create_time.desc()).all()
         # if orders == None:
         #     return jsonify(message=("Orders empty.")), 400
-        for order in orders:
+        for i in range(len(orders)):
+            order = orders[i]
             info = {
+                'key': i,
                 "order_id":order.order_id,
                 "shop_name" : Shop.query.filter_by(shop_id=order.shop_id).first().shop_name,
                 "user_id" : order.user_id,
@@ -455,8 +473,10 @@ def shop_order_detail():
         products = Purchased_Product.query.filter_by(order_id=order_id).all()
         if products == None:
             return jsonify(message=("Request id do not exist.")), 404
-        for product in products:
+        for i in range(len(products)):
             info = dict()
+            product = products[i]
+            info['key'] = i
             info["product_name"] = product.product_name
             info["product_price"] = product.product_price
             info["quantity"] = product.quantity
@@ -469,9 +489,12 @@ def my_orders():
     if request.method == 'GET':
         user_id = request.args.get("user_id")
         orders = Order.query.filter_by(user_id=user_id).order_by(Order.create_time.desc()).all()
-        for order in orders:
+        for i in range(len(orders)):
+            order = orders[i]
             info = {
-                "order_id":order.order_id,
+                'key': i,
+                "order_id" : order.order_id,
+                "shop_id" : order.shop_id,
                 "shop_name" : Shop.query.filter_by(shop_id=order.shop_id).first().shop_name,
                 "user_contact": order.user_contact,
                 "user_location" : order.user_location,
@@ -488,8 +511,7 @@ def cancel_order():
     request_object = request.get_json()
     if request_object is None:
         return jsonify(message=('Invalid item body.')), 400
-    request_form = request_object.get("form")
-    order_id = request_form.get("order_id")
+    order_id = request_object.get("order_id")
     order = Order.query.filter_by(order_id=order_id).first()
     order.order_status = "cancelled"
     db.session.commit()
@@ -501,22 +523,57 @@ def pay_order():
     response_object = dict()
     request_object = request.get_json()
     if request_object is None:
-        return jsonify(message=('Invalid item body.')), 400
-    request_form = request_object.get("form")
-    order_id = request_form.get("order_id")
+        return jsonify(message=('Invalid item body.'))
+    order_id = request_object.get("order_id")
+    price = request_object.get("price")
     order = Order.query.filter_by(order_id=order_id).first()
-    if order.order_status != 'approved' or order.order_status != 'delivering':
-        return jsonify(message=('Invalid order status.')), 400
+    print(order_id, price, order.order_status)
+    if order.order_status != 'approved' and order.order_status != 'delivering':
+        return jsonify(message=('Invalid order status.'))
     order.order_status = "finished"
     # transaction of balance
     user_id = order.user_id
     user = User.query.filter_by(user_id=user_id).first()
     shop = Shop.query.filter_by(shop_id=order.shop_id).first()
-    balance_amount = user.frozen_balance
-    user.frozen_balance=0
-    shop.shop_balance += balance_amount
+    user.frozen_balance -= price
+    shop.shop_balance += price
     db.session.commit()
     response_object["message"] = "Successfully pay order!"
+    return jsonify(data=response_object)
+
+@api_bp.route('/rate_order',methods=['POST'])
+def rate_order():
+    response_object = dict()
+    request_object = request.get_json()
+    if request_object is None:
+        return jsonify(message=('Invalid item body.')), 400
+    shop = Shop.query.filter_by(shop_id=request_object.get('shop_id')).first()
+    shop.shop_rate_total += request_object.get("rate")
+    shop.shop_rate_number += 1
+    db.session.commit()
+    response_object["message"] = "Successfully updating rate!"
+    return jsonify(data=response_object)
+
+@api_bp.route('/change_order_status',methods=['POST'])
+def change_order_status():
+    response_object = dict()
+    request_object = request.get_json()
+    if request_object is None:
+        return jsonify(message=('Invalid item body.')), 400
+    order_id = request_object.get("order_id")
+    status = request_object.get("status")
+    current_status = Order.query.filter_by(order_id=order_id).first().order_status
+    print(order_id, status, current_status)
+    if current_status == "finished" or current_status == "cancelled" or current_status == "denied" or current_status == 'delivering':
+        return jsonify(message=("Invalid order status. Can't change status now."))
+    if current_status == "pending" and (status != "approved" and status != "denied"):
+        return jsonify(message=('Invalid order status. Must approve or deny a pending status.'))
+    if current_status == "approved" and status != 'delivering':
+        return jsonify(message=('Invalid order status. Can just change to delivering state.'))
+    order = Order.query.filter_by(order_id=order_id).first()
+    order.order_status = status
+    db.session.commit()
+    response_object["message"] = "Successfully updating status!"
     return jsonify(data=response_object)
 
 #API for admin
@@ -613,7 +670,7 @@ def api_operateApplication():
             shop = Shop(user_id=user_id, shop_name=shop_name,
             shop_info=shop_info, shop_contact=shop_contact,
             shop_location=shop_location, shop_location_detail=shop_location_detail,
-            shop_license_number=shop_license, shop_status='open',)
+            shop_license_number=shop_license, shop_status='open',shop_balance=0)
             db.session.add(shop)
             db.session.commit()
             return jsonify({'status': 'ok', 'info':'approve success'})

@@ -229,6 +229,7 @@ export default {
         this.shopInfo.locationDetail = data['locationDetail']
         this.shopInfo.shopStatus = data['shopStatus']
         this.shopInfo.licenseNum = data['licenseNum']
+        this.shopInfo.balance = data['balance']
         this.infoData.push({'title': 'Name','content': data['name']})
         this.infoData.push({'title': 'Shop contact','content': data['contact']})
         this.infoData.push({'title': 'Shop information','content': data['info']})
@@ -236,7 +237,7 @@ export default {
         this.infoData.push({'title': 'Location','content': data['location']})
         this.infoData.push({'title': 'Detailed location','content': data['locationDetail']})
         this.infoData.push({'title': 'Shop status','content': data['shopStatus']})
-        this.infoData.push({'title': 'ID number','content': data['licenseNum']})
+        this.infoData.push({'title': 'Balance','content': data['balance']})
       }
     })
   },
