@@ -931,6 +931,8 @@ def api_submitOrder():
     user_contact = data['user_contact']
     user_location = data['user_location']
     delivery_fee = int(data['delivery_fee'])
+    # print(type(dishes))
+    # print(dishes)
     # print(shop_id,user_id,user_contact,user_location,delivery_fee)
     #change fund
     user = User.query.get(user_id)
@@ -954,14 +956,15 @@ def api_submitOrder():
     # for order in message:
     #     print(order.shop_id)
     # add products
-    for dish in dishes:
-        # print(type(dish))
-        product_id = dish['id']
-        product_name = dish['name']
-        product_quantity = dish['quantity']
-        product_price = dish['price']
+    for key in dishes.keys():
+        product = dishes[key]
+        # print(key)
+        # print(dishes[key])
+    #     # print(type(dish))
+        product_name = product['name']
+        product_quantity = product['quantity']
+        product_price = float(product['price'])
         product = Purchased_Product(
-            product_id = product_id,
             product_name = product_name,
             product_price = product_price,
             quantity = product_quantity,

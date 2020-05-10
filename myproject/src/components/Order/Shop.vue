@@ -61,7 +61,7 @@
               <el-dialog
                 :visible.sync="submitFormVisible">
                 <el-form ref="submitForm" :model="submitForm" :rules="rules">
-                  <el-form-item label="Contact" prop="user_contact" :label-width="formLabelWidth">
+                  <el-form-item label="Phone number" prop="user_contact" :label-width="formLabelWidth">
                     <el-input v-model="submitForm.user_contact" autocomplete="off"></el-input>
                   </el-form-item>
                   <el-form-item label="Location" prop="user_location" :label-width="formLabelWidth">
@@ -103,27 +103,27 @@
                 :size="large" 
                 :pagination="pagination" 
                 :data-source="dishes">
-                <a-list-item slot="renderItem" key="item.title" slot-scope="item">
+                <a-list-item slot="renderItem" key="item.title" slot-scope="item, index">
                   <a-card >
                     <el-row type="flex" justify="space-between">
                       <el-col>
                         <span>Name:</span>
                         <span>
-                          <el-button type="text" size="mini" @click="viewDetail(item)">{{ item.name }}</el-button>
+                          <el-button type="text" size="mini" @click="viewDetail(item, index)">{{ item.name }}</el-button>
                         </span>
                         <el-dialog
                           :visible.sync="dishDialogVisible"
                           width="30%"
                           center>
-                          <span>Name:</span><span>{{item.name}}</span>
+                          <span>Name:</span><span>{{dish_info.name}}</span>
                           <br>
-                          <span>Price:</span><span>{{item.price}}</span>
+                          <span>Price:</span><span>{{dish_info.price}}</span>
                           <br>
-                          <span>Sale:</span><span>{{item.sale}}</span>
+                          <span>Sale:</span><span>{{dish_info.sale}}</span>
                           <br>
-                          <span>Info:</span><span>{{item.info}}</span>
+                          <span>Info:</span><span>{{dish_info.info}}</span>
                           <br>
-                          <el-input-number size="mini" v-model="item.count"></el-input-number>
+                          <el-input-number size="mini" v-model="count"></el-input-number>
                           <span slot="footer" class="dialog-footer">
                             <el-button type="primary" @click="addDishes(item)">Add</el-button>
                           </span>
@@ -168,6 +168,7 @@ export default {
       }
     };
     return {
+      count:0,
       user_fund: '',
       shop_info: [],
       dishes: [],
@@ -180,6 +181,14 @@ export default {
         name: '',
         price: '',
         quantity: '',
+      },
+      dish_info:{
+        product_id:'',
+        name:'',
+        price: '',
+        sale: '',
+        info: '',
+        index: '',
       },
       pagination: {
         onChange: page => {
@@ -290,7 +299,7 @@ export default {
     },
     submitOrder(){
       Vue.axios.post('/api/submitOrder', {
-        dishes: this.cart_data,
+        dishes: this.shopping_cart,
         user_id: sessionStorage.getItem('accessToken'),
         shop_id: this.$route.params.shopid,
         price: this.total_price,
@@ -302,22 +311,37 @@ export default {
       }).catch(function (error) {
         console.log(error)
       })
+      this.drawer=false
+      this.submitFormVisible=false
+      this.payConfirmDialogVisible=false
+      this.$router.push({path:`/myorder`}).catch(err => {err})
     },
-    addDishes(item){
-      if (item.count == 0) {
+    addDishes(){
+      if (this.count == 0) {
         this.$message('Quantity should be larger than 0');
       }
       else {
         this.dishDialogVisible = false
-        this.product.id = item.productid
-        this.product.name = item.name
-        this.product.price = item.price
-        this.product.quantity = item.count
-        this.shopping_cart[item.name] = this.product
+        let index = this.dish_info.index
+        // this.product.id = this.dish_info.productid
+        this.product.name = this.dish_info.name
+        this.product.price = this.dish_info.price
+        this.product.quantity = this.count
+        let _product = JSON.stringify(this.product)
+        let productClone = JSON.parse(_product)
+        // // console.log(productClone)
+        this.shopping_cart[productClone.name] = productClone
+        this.dishes[index].count = productClone.quantity
       }
     },
-    viewDetail(item){
-      console.log(item)
+    viewDetail(item, index){
+      this.dish_info.index = index
+      this.dish_info.product_id = item.product_id
+      this.dish_info.name = item.name
+      this.dish_info.price = item.price
+      this.dish_info.sale = item.sale
+      this.dish_info.info = item.info
+      this.count = item.count
       this.dishDialogVisible = true
     },
     openShoppingCart(){
@@ -340,7 +364,9 @@ export default {
       }
     }).then((response) => {
       var data = response.data
-      this.dishes = data
+      let _data = JSON.stringify(data)
+      let dataClone = JSON.parse(_data)
+      this.dishes = dataClone
     })
     //get shop info
     Vue.axios.get('api/searchShop', {

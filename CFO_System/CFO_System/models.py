@@ -138,8 +138,8 @@ class Order(db.Model):
 
 class Purchased_Product(db.Model):
     __tablename__ = 'purchased_products'
-    product_id = db.Column(db.Integer, primary_key=True, nullable=False, index=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), primary_key=True, nullable=False, index=True)
+    product_id = db.Column(db.Integer, primary_key=True,autoincrement=True, unique=True, nullable=False, index=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), nullable=False, index=True)
     product_name = db.Column(db.String(32), nullable=False)
     product_price = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
