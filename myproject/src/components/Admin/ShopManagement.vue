@@ -47,7 +47,7 @@
                           :visible.sync="detailsVisible"
                           width="30%"
                           center>
-                          <span>ID:</span><span> {{shop_detail.application_id}} </span>
+                          <span>ID:</span><span> {{shop_detail.shop_id}} </span>
                           <br>
                           <span>Shop:</span><span> {{shop_detail.shop_name}} </span>
                           <br>

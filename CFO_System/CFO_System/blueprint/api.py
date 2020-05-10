@@ -159,6 +159,7 @@ def api_submitShopApply():
 def api_getShopIndex():
     user_id = request.args.get('user_id')
     shop_id = request.args.get('shop_id')
+    print(type(user_id), type(shop_id))
     shop = Shop.query.filter_by(shop_id=shop_id, user_id=user_id).first_or_404()
     if shop is None:
         return jsonify({
@@ -461,6 +462,62 @@ def shop_order_detail():
             info["quantity"] = product.quantity
             response_object['list'].append(info)
         return jsonify(data=response_object)
+
+@api_bp.route('/my_orders',methods=['GET','POST'])
+def my_orders():
+    response_object = {"list":list()}
+    if request.method == 'GET':
+        user_id = request.args.get("user_id")
+        orders = Order.query.filter_by(user_id=user_id).order_by(Order.create_time.desc()).all()
+        for order in orders:
+            info = {
+                "order_id":order.order_id,
+                "shop_name" : Shop.query.filter_by(shop_id=order.shop_id).first().shop_name,
+                "user_contact": order.user_contact,
+                "user_location" : order.user_location,
+                "delivery_fee" : order.delivery_fee,
+                "create_time": order.create_time,
+                "order_status": order.order_status
+            }
+            response_object['list'].append(info)
+        return jsonify(data=response_object)
+
+@api_bp.route('/cancel_order',methods=['POST'])
+def cancel_order():
+    response_object = dict()
+    request_object = request.get_json()
+    if request_object is None:
+        return jsonify(message=('Invalid item body.')), 400
+    request_form = request_object.get("form")
+    order_id = request_form.get("order_id")
+    order = Order.query.filter_by(order_id=order_id).first()
+    order.order_status = "cancelled"
+    db.session.commit()
+    response_object["message"] = "Successfully cancel order!"
+    return jsonify(data=response_object)
+
+@api_bp.route('/pay_order',methods=['POST'])
+def pay_order():
+    response_object = dict()
+    request_object = request.get_json()
+    if request_object is None:
+        return jsonify(message=('Invalid item body.')), 400
+    request_form = request_object.get("form")
+    order_id = request_form.get("order_id")
+    order = Order.query.filter_by(order_id=order_id).first()
+    if order.order_status != 'approved' or order.order_status != 'delivering':
+        return jsonify(message=('Invalid order status.')), 400
+    order.order_status = "finished"
+    # transaction of balance
+    user_id = order.user_id
+    user = User.query.filter_by(user_id=user_id).first()
+    shop = Shop.query.filter_by(shop_id=order.shop_id).first()
+    balance_amount = user.frozen_balance
+    user.frozen_balance=0
+    shop.shop_balance += balance_amount
+    db.session.commit()
+    response_object["message"] = "Successfully pay order!"
+    return jsonify(data=response_object)
 
 #API for admin
 #provide admin application

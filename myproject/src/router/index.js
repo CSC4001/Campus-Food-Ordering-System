@@ -23,6 +23,7 @@ import AdminOrderManagement from '@/components/Admin/OrderManagement'
 // order
 import Shop from '@/components/Order/Shop'
 import Search from '@/components/Order/Search'
+import MyOrder from '@/components/Order/MyOrder'
 // import Sidebar from '@/components/Sidebar'
 // import Content from '@/components/Content'
 // import Header from '@/components/Header'
@@ -65,6 +66,11 @@ export default new Router({
             path: '/search/:searchType/:searchKey',
             name: 'Search',
             component: Search
+        },
+        {
+            path: '/myorder',
+            name: 'MyOrder',
+            component: MyOrder
         },
         {
             path: '/shopsystem/',

@@ -134,7 +134,7 @@
           }
         }).then((response) => {
           console.log(response)
-          var data = response.data
+          var data = response.data.message
           this.orderVisible = false
           this.$message.success(data)
         })
