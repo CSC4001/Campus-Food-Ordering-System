@@ -8,6 +8,7 @@ from CFO_System.blueprint.shop import shop_bp
 from CFO_System.blueprint.auth import auth_bp
 from CFO_System.blueprint.customer import customer_bp
 from CFO_System.blueprint.admin import admin_bp
+from CFO_System.blueprint.api import api_bp
 from datetime import datetime
 
 '''
@@ -206,7 +207,6 @@ data = {
 }
 '''
 @shop_bp.route('/order_management',methods=['GET','POST'])
-@login_required
 def shop_orders():
     response_object = {"list":list()}
     if request.method == 'GET':
@@ -251,7 +251,7 @@ data = {
     ]
 }
 '''
-@shop_bp.route('/order_detail',methods=['GET','POST'])
+@api_bp.route('/order_detail',methods=['GET','POST'])
 @login_required
 def shop_order_detail():
     response_object = {"list":list()}

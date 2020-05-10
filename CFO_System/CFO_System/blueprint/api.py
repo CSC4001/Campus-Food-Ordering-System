@@ -367,7 +367,7 @@ def deleteDish():
 # home page get highest rate shops
 @api_bp.route('/getRatedShops', methods=['GET'])
 def api_getRatedShops():
-    shops = Shop.query.order_by(Shop.shop_rate_total).limit(6).all()
+    shops = Shop.query.order_by(Shop.shop_rate_total.desc()).limit(6).all()
     result = list()
     for shop in shops:
         a = dict()
@@ -394,7 +394,73 @@ def api_getRatedDishes():
         result.append(a)
     return Response(json.dumps(result),  mimetype='application/json')
 
+# get search result by given shop/dish
+@api_bp.route('/getSearch', methods=['GET'])
+def api_getSearch():
+    searchKey = request.args.get('searchKey')
+    searchType = request.args.get('searchType')
+    if searchType == 'shop':
+        shops = Shop.query.filter(Shop.shop_name.like('%' + searchKey + '%')if searchKey is not None else "").all()
+        result = list()
+        for shop in shops:
+            a = dict()
+            a['shop_id'] = shop.shop_id
+            a['shop_name'] = shop.shop_name
+            a['shop_info'] = shop.shop_info
+            a['shop_rate_total'] = shop.shop_rate_total
+            a['shop_rate_number'] = shop.shop_rate_number
+            result.append(a)
+        return Response(json.dumps(result),  mimetype='application/json')
+    elif searchType == 'dishes':
+        dishes = Product.query.filter(Product.product_name.like('%' + searchKey + '%') if searchKey is not None else "").all()
+        result = list()
+        for dish in dishes:
+            a = dict()
+            a['product_id'] = dish.product_id
+            a['shop_id'] = dish.shop_id
+            a['product_name'] = dish.product_name
+            a['product_info'] = dish.product_info
+            a['total_sale'] = dish.total_sale
+            result.append(a)
+        return Response(json.dumps(result),  mimetype='application/json')
 
+@api_bp.route('/order_management',methods=['GET','POST'])
+def shop_orders():
+    response_object = {"list":list()}
+    if request.method == 'GET':
+        shop_id = request.args.get("shop_id")
+        orders = Order.query.filter_by(shop_id=shop_id).order_by(Order.create_time.desc()).all()
+        # if orders == None:
+        #     return jsonify(message=("Orders empty.")), 400
+        for order in orders:
+            info = {
+                "order_id":order.order_id,
+                "shop_name" : Shop.query.filter_by(shop_id=order.shop_id).first().shop_name,
+                "user_id" : order.user_id,
+                "user_location" : order.user_location,
+                "user_contact": order.user_contact,
+                "delivery_fee" : order.delivery_fee,
+                "create_time": order.create_time,
+                "order_status": order.order_status
+            }
+            response_object['list'].append(info)
+        return jsonify(data=response_object)
+
+@api_bp.route('/order_detail',methods=['GET','POST'])
+def shop_order_detail():
+    response_object = {"list":list()}
+    if request.method == 'GET':
+        order_id = request.args.get("order_id")
+        products = Purchased_Product.query.filter_by(order_id=order_id).all()
+        if products == None:
+            return jsonify(message=("Request id do not exist.")), 404
+        for product in products:
+            info = dict()
+            info["product_name"] = product.product_name
+            info["product_price"] = product.product_price
+            info["quantity"] = product.quantity
+            response_object['list'].append(info)
+        return jsonify(data=response_object)
 
 #API for admin
 #provide admin application
