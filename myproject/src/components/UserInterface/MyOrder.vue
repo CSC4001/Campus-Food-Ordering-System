@@ -60,7 +60,7 @@
                       confirmButtonText='Confirm'
                       cancelButtonText='Cancel'
                       title="Sure to rate?"
-                      :onConfirm="rate(item.shop_id)"
+                      :onConfirm="rateOrder(item.shop_id)"
                     >
                       <el-button type="primary">Rate</el-button>
                     </el-popconfirm>
@@ -154,7 +154,7 @@
           })
         }
       },
-      rate(id) {
+      rateOrder(id) {
         Vue.axios.post('/api/change_order_status',{
           'shop_id' :id,
           'rate': this.$data.rate
