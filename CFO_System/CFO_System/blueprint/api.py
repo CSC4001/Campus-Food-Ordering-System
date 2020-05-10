@@ -578,6 +578,8 @@ def api_searchShop():
         temp['shop_status'] = message.shop_status
         temp['shop_location'] = message.shop_location
         temp['shop_info'] = message.shop_info
+        temp['shop_rate'] = message.shop_rate_number
+        temp['delivery_fee'] = message.shop_delivery_fee
         result.append(temp)
         return Response(json.dumps(result), mimetype='application/json')
 
@@ -604,52 +606,52 @@ def api_unblockShop():
 #get order info
 @api_bp.route('/getAllOrder', methods=['GET'])
 def api_getOrder():
-    result = list()
-    temp = dict()
-    temp['key'] = 1
-    temp['order_id'] = 1
-    temp['user_id'] = 1
-    temp['shop_id'] = 1
-    purchased_products = list()
-    purchased_products.append(('dishes1',1))
-    purchased_products.append(('dishes2',1))
-    temp['purchased_products'] = purchased_products
-    temp['user_contact'] = '12345678901'
-    temp['user_location'] = 'order.user_location'
-    temp['delivery_fee'] = 1
-    temp['create_time'] = "yyyy-mm-dd h:m:s"
-    temp['order_status'] = 'pending'
-    result.append(temp)
-    return Response(json.dumps(result), mimetype='application/json')
+    # result = list()
+    # temp = dict()
+    # temp['key'] = 1
+    # temp['order_id'] = 1
+    # temp['user_id'] = 1
+    # temp['shop_id'] = 1
+    # purchased_products = list()
+    # purchased_products.append(('dishes1',1))
+    # purchased_products.append(('dishes2',1))
+    # temp['purchased_products'] = purchased_products
+    # temp['user_contact'] = '12345678901'
+    # temp['user_location'] = 'order.user_location'
+    # temp['delivery_fee'] = 1
+    # temp['create_time'] = "yyyy-mm-dd h:m:s"
+    # temp['order_status'] = 'pending'
+    # result.append(temp)
+    # return Response(json.dumps(result), mimetype='application/json')
 
 
-    # messages = Order.query.all()
-    # if len(messages) == 0:
-    #     return jsonify({})
-    # else:
-        # result = list()
-        # key = 1
-        # for order in messages:
-        #     temp = dict()
-        #     temp['key'] = key
-        #     temp['order_id'] = order.order_id
-        #     temp['user_id'] = order.user_id
-        #     temp['shop_id'] = order.shop_id
-        #     purchased_products = list()
-        #     products = Purchased_Product.query.filter_by(order_id=order.order_id)
-        #     for product in products:
-        #         product_name = product.product_name
-        #         product_quantity = product.product_quantity
-        #         purchased_products.append((product_name,product_quantity))
-        #     temp['purchased_products'] = purchased_products
-        #     temp['user_contact'] = order.user_contact
-        #     temp['user_location'] = order.user_location
-        #     temp['delivery_fee'] = order.delivery_fee
-        #     temp['create_time'] = order.create_time
-        #     temp['order_status'] = order.order_status
-        #     result.append(temp)
-        #     key += 1
-    #     return Response(json.dumps(result), mimetype='application/json')
+    messages = Order.query.all()
+    if len(messages) == 0:
+        return jsonify({})
+    else:
+        result = list()
+        key = 1
+        for order in messages:
+            temp = dict()
+            temp['key'] = key
+            temp['order_id'] = order.order_id
+            temp['user_id'] = order.user_id
+            temp['shop_id'] = order.shop_id
+            purchased_products = list()
+            # products = Purchased_Product.query.filter_by(order_id=order.order_id)
+            # for product in products:
+            #     product_name = product.product_name
+            #     product_quantity = product.product_quantity
+            #     purchased_products.append((product_name,product_quantity))
+            temp['purchased_products'] = purchased_products
+            temp['user_contact'] = order.user_contact
+            temp['user_location'] = order.user_location
+            temp['delivery_fee'] = order.delivery_fee
+            temp['create_time'] = order.create_time.strftime("%Y-%m-%d %H:%M:%S")
+            temp['order_status'] = order.order_status
+            result.append(temp)
+            key += 1
+        return Response(json.dumps(result), mimetype='application/json')
 
 #search order info
 @api_bp.route('/searchOrder', methods=['GET'])
@@ -679,3 +681,75 @@ def api_searchOrder():
         temp['order_status'] = message.order_status
         result.append(temp)
         return Response(json.dumps(result), mimetype='application/json')
+
+#get a shop's dishes info 
+@api_bp.route('/getDishesInfo', methods=['GET'])
+def api_getDishesInfo():
+    data = request.args.get('id')
+    shop = Shop.query.get(data)
+    dishes = Product.query.filter_by(shop_id=data).all()
+    result = list()
+    for i in dishes:
+        a = dict()
+        a['productid'] = i.product_id
+        a['name'] = i.product_name
+        a['info'] = i.product_info
+        a['price'] = i.product_price
+        a['sale'] = i.total_sale
+        a['count'] = 0
+        result.append(a)
+    return Response(json.dumps(result),  mimetype='application/json')
+
+#submit order
+@api_bp.route('/submitOrder', methods=['POST'])
+def api_submitOrder():
+    data = request.get_json()
+    dishes = data['dishes']
+    shop_id = int(data['shop_id'])
+    user_id = int(data['user_id'])
+    price = data['price']
+    user_contact = data['user_contact']
+    user_location = data['user_location']
+    delivery_fee = int(data['delivery_fee'])
+    # print(shop_id,user_id,user_contact,user_location,delivery_fee)
+    #change fund
+    user = User.query.get(user_id)
+    user.available_balance = round(user.available_balance - price, 2)
+    frozen_balance = user.frozen_balance
+    user.frozen_balance =frozen_balance + price
+    #create order
+    order = Order(
+        # order_id = 0,
+        shop_id=shop_id, 
+        user_id=user_id, 
+        user_contact=user_contact,
+        user_location=user_location,
+        delivery_fee=delivery_fee,
+        create_time=datetime.utcnow(),
+        order_status='pending'
+    )
+    db.session.add(order)
+
+    # message = Order.query.all()
+    # for order in message:
+    #     print(order.shop_id)
+    # add products
+    for dish in dishes:
+        # print(type(dish))
+        product_id = dish['id']
+        product_name = dish['name']
+        product_quantity = dish['quantity']
+        product_price = dish['price']
+        product = Purchased_Product(
+            product_id = product_id,
+            product_name = product_name,
+            product_price = product_price,
+            quantity = product_quantity,
+        )
+        db.session.add(product)
+        order.purchased_products.append(product)
+    db.session.commit()
+    # print(type(dishes))
+    # print(user_id)
+    # print(shop_id)
+    return jsonify({'status': 'ok', 'info': 'submit success'})

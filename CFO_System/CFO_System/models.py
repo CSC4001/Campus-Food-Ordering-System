@@ -121,7 +121,7 @@ class User(db.Model, UserMixin):
 
 class Order(db.Model):
     __tablename__ = 'orders'
-    order_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True, index=True)
+    order_id = db.Column(db.Integer, primary_key=True,autoincrement=True, nullable=False, unique=True, index=True)
     shop_id = db.Column(db.Integer, db.ForeignKey('shops.shop_id'), nullable=False, index=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False, index=True)
     user_contact = db.Column(db.String(32), nullable=False)
@@ -138,8 +138,8 @@ class Order(db.Model):
 
 class Purchased_Product(db.Model):
     __tablename__ = 'purchased_products'
-    product_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, unique=True, index=True)
-    order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), nullable=False, index=True)
+    product_id = db.Column(db.Integer, primary_key=True, autoincrement=True, nullable=False, index=True)
+    order_id = db.Column(db.Integer, db.ForeignKey('orders.order_id'), primary_key=True, nullable=False, index=True)
     product_name = db.Column(db.String(32), nullable=False)
     product_price = db.Column(db.Float, nullable=False)
     quantity = db.Column(db.Integer, nullable=False, default=1)
