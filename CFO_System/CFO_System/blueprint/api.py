@@ -473,13 +473,14 @@ def api_getFavourite():
     for bookmark in bookmarks:
         shop_id = bookmark.shop_id
         shop = Shop.query.get(shop_id)
-        a = dict()
-        a['user_id'] = user_id
-        a['shop_id'] = shop_id
-        a['shop_name'] = shop.shop_name
-        a['shop_info'] = shop.shop_info
-        a['shop_status'] = shop.shop_status
-        result.append(a)
+        if shop.shop_status == 'open':
+            a = dict()
+            a['user_id'] = user_id
+            a['shop_id'] = shop_id
+            a['shop_name'] = shop.shop_name
+            a['shop_info'] = shop.shop_info
+            a['shop_status'] = shop.shop_status
+            result.append(a)
     return Response(json.dumps(result),  mimetype='application/json')
 
 @api_bp.route('/order_management',methods=['GET','POST'])
