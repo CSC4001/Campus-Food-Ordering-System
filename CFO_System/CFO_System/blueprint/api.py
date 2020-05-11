@@ -509,7 +509,7 @@ def shop_orders():
 def shop_order_detail():
     response_object = {"list":list()}
     if request.method == 'GET':
-        order_id = request.args.get("order_id")
+        order_id = int(request.args.get("order_id"))
         products = Purchased_Product.query.filter_by(order_id=order_id).all()
         if products == None:
             return jsonify(message=("Request id do not exist.")), 404
@@ -826,25 +826,6 @@ def api_unblockShop():
 #get order info
 @api_bp.route('/getAllOrder', methods=['GET'])
 def api_getOrder():
-    # result = list()
-    # temp = dict()
-    # temp['key'] = 1
-    # temp['order_id'] = 1
-    # temp['user_id'] = 1
-    # temp['shop_id'] = 1
-    # purchased_products = list()
-    # purchased_products.append(('dishes1',1))
-    # purchased_products.append(('dishes2',1))
-    # temp['purchased_products'] = purchased_products
-    # temp['user_contact'] = '12345678901'
-    # temp['user_location'] = 'order.user_location'
-    # temp['delivery_fee'] = 1
-    # temp['create_time'] = "yyyy-mm-dd h:m:s"
-    # temp['order_status'] = 'pending'
-    # result.append(temp)
-    # return Response(json.dumps(result), mimetype='application/json')
-
-
     messages = Order.query.all()
     if len(messages) == 0:
         return jsonify({})
@@ -858,12 +839,13 @@ def api_getOrder():
             temp['user_id'] = order.user_id
             temp['shop_id'] = order.shop_id
             purchased_products = list()
-            # products = Purchased_Product.query.filter_by(order_id=order.order_id)
+            # products = Purchased_Product.query.filter_by(order_id=order.order_id).all()
             # for product in products:
-            #     product_name = product.product_name
-            #     product_quantity = product.product_quantity
+            #     product_name = product['product_name']
+            #     product_price = product['product_price']
+            #     product_quantity = product['product_quantity']
             #     purchased_products.append((product_name,product_quantity))
-            temp['purchased_products'] = purchased_products
+            # temp['purchased_products'] = purchased_products
             temp['user_contact'] = order.user_contact
             temp['user_location'] = order.user_location
             temp['delivery_fee'] = order.delivery_fee

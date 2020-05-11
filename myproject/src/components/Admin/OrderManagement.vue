@@ -59,7 +59,17 @@
                             <br>
                             <span>Shop ID:</span><span> {{order_detail.shop_id}} </span>
                             <br>
-                            <span>Dishes List:</span><span> {{order_detail.purchased_products}} </span>
+                            <span>Dishes List:</span><span><el-button type="text" size="middle" @click="viewDish">view</el-button></span>
+                            <el-dialog
+                              :visible.sync="dishListVisible">
+                              <a-table :columns="columns" 
+                                :data-source="dishDetail"
+                                :pagination="{pageSize:6}"
+                              ></a-table>
+                               <span slot="footer" class="dialog-footer">
+                                <el-button size="medium" type="primary" @click="dishListVisible = false">Confirm</el-button>
+                              </span>
+                            </el-dialog>
                             <br>
                             <span>User Contact:</span><span> {{order_detail.user_contact}} </span>
                             <br>
@@ -101,11 +111,34 @@
     //   this.fetch();
     // },
     data() {
+      const columns = [
+        {
+          title: 'Product Name',
+          dataIndex: 'product_name',
+          key: 'product_name',
+          ellipsis: true,
+        },
+        {
+          title: 'Product Price',
+          dataIndex: 'product_price',
+          key: 'product_price',
+          ellipsis: true,
+        },
+        {
+          title: 'Quantity',
+          dataIndex: 'quantity',
+          key: 'quantity',
+          ellipsis: true,
+        },
+      ]
       return {
+        columns,
+        dishDetail:[],
         data: [],
         pagination: {},
         loading: false,
         detailsVisible: false,
+        dishListVisible:false,
         order_detail:{
           order_id: '',
           user_id: '',
@@ -148,13 +181,25 @@
         this.order_detail.order_id = record.order_id
         this.order_detail.user_id = record.user_id
         this.order_detail.shop_id = record.shop_id
-        this.order_detail.purchased_products = record.purchased_products
+        // this.order_detail.purchased_products = record.purchased_products
         this.order_detail.user_contact = record.user_contact
         this.order_detail.user_location = record.user_location
         this.order_detail.delivery_fee = record.delivery_fee
         this.order_detail.create_time = record.create_time
         this.order_detail.order_status = record.order_status
         this.detailsVisible = true
+      },
+      viewDish(){
+        Vue.axios.get('/api/order_detail',{
+          params: {
+            'order_id': this.order_detail.order_id,
+          }
+        }).then((response) => {
+          var data = response.data.data.list
+          console.log(data)
+          this.dishDetail = data
+        })
+        this.dishListVisible=true
       }
       // fetch(params = {}) {
       //   console.log('params:', params);
@@ -183,7 +228,6 @@
       }).then((response) => {
         var data = response.data
         this.data = data
-        console.log(data)
       })
     },
     components: {
