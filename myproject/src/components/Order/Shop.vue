@@ -239,6 +239,14 @@ export default {
   },
   methods: {
     favourite(){
+      Vue.axios.get('/api/setFavourite',{
+      params: {
+        user_id: sessionStorage.getItem('accessToken'),
+        shop_id: this.$route.params.shopid
+      }
+    }).then((response) => {
+      console.log(response)
+    })
 
     },
     onSearch(){
@@ -277,25 +285,6 @@ export default {
       } else {
         this.submitOrder()
       }
-    },
-    changeFund(){
-      fetch("http://localhost:5000/api/submitWithdraw?id="+sessionStorage.getItem('accessToken'),{
-        method:"post",
-        headers:{
-          'content-type':'application/json'
-        },
-        body: JSON.stringify({"withdraw":this.total_price})
-      }).then((r) => {
-        return r.json()
-      }).then((data) => {
-        if (data.status == 'ok'){
-          this.$message.success(data.info);
-          this.$data.infoForm.available = data.available;
-        } else {
-          this.$message.error(data.info);
-          return false;
-        }
-      })
     },
     submitOrder(){
       Vue.axios.post('/api/submitOrder', {

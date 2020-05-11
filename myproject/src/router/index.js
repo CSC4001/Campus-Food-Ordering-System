@@ -7,6 +7,7 @@ import Register from '@/components/UserInterface/Register'
 import Home from '@/components/UserInterface/Home' 
 import PersonalInfo from '@/components/UserInterface/PersonalInfo'
 import MyShop from '@/components/UserInterface/MyShop'
+import Favourite from '@/components/UserInterface/Favourite'
 //shop
 import ShopSystem from '@/components/Shop/ShopSystem'
 import DishesManagement from '@/components/Shop/DishesManagement'
@@ -71,6 +72,11 @@ export default new Router({
             path: '/myorder',
             name: 'MyOrder',
             component: MyOrder
+        },
+        {
+            path: '/favourite',
+            name: 'Favourite',
+            component: Favourite
         },
         {
             path: '/shopsystem/',

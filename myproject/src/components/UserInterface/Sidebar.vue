@@ -14,7 +14,7 @@
             </el-menu-item>
         </router-link>
 
-        <router-link to="/personalinfo">
+        <router-link to="/favourite">
             <el-menu-item index="2">
                 <i class="el-icon-menu"></i>
                 <span slot="title">Favourite</span>

@@ -452,7 +452,7 @@ def api_getSearch():
 def api_setFavourite():
     user_id = request.args.get('user_id')
     shop_id = request.args.get('shop_id')
-    bookmark = Bookmark(user_id=user_id, shop_id=shop_id).all()
+    bookmark = Bookmark(user_id=user_id, shop_id=shop_id)
     db.session.add(bookmark)
     db.session.commit()
     return jsonify({
@@ -471,10 +471,11 @@ def api_getFavourite():
     bookmarks = Bookmark.query.filter_by(user_id=user_id)
     result = list()
     for bookmark in bookmarks:
-        shop = Shop.query.filter_by(shop_id=shop_id)
+        shop_id = bookmark.shop_id
+        shop = Shop.query.get(shop_id)
         a = dict()
-        a['user_id'] = userid
-        a['shop_id'] = shop.shop_id
+        a['user_id'] = user_id
+        a['shop_id'] = shop_id
         a['shop_name'] = shop.shop_name
         a['shop_info'] = shop.shop_info
         a['shop_status'] = shop.shop_status
