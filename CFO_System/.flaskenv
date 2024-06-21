@@ -1,0 +1,2 @@
+FLASK_APP=CFO_System
+FLASK_ENV=development
